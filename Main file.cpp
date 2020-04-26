@@ -11,33 +11,40 @@ int main()
 	Admin buffa;
 	Brigade buffb;
 	Order buffo;
-
-	ofstream fout;
-	fout.open("Administrators.txt");
-	if (fout.is_open())
-	{
-		fout << buffa;
-	}
-	fout.close();
-
-	cout << "My user in real: " << buffa << ' ' << buffa.password << endl;
-
+	
 	ifstream fin;
-	fin.open("Administrators.txt");
-	if (fin.is_open())
-		fin >> buffa;
-	cout << "My user from file: " << buffa << ' ' << buffa.password;
-	
-	
-	return 0;
-
-	/*ifstream fin;
-	fin.open("Administrators.txt");
+	fin.open("administrators.txt");
 	if (fin.is_open())
 	{
 		for (int i = 0; !fin.eof(); i++)
+		{
 			fin >> buffa;
-	}/*
+			veca.push_back(buffa);
+		}
+	}
+	fin.close();
+
+	fin.open("brigades.txt");
+	if (fin.is_open())
+	{
+		for (int i = 0; !fin.eof(); i++)
+		{
+			fin >> buffb;
+			vecb.push_back(buffb);
+		}
+	}
+	fin.close();
+
+	fin.open("orders.txt");
+	if (fin.is_open())
+	{
+		for (int i = 0; !fin.eof(); i++)
+		{
+			fin >> buffo;
+			veco.push_back(buffo);
+		}
+	}
+	fin.close();
 
 
 
@@ -46,6 +53,11 @@ int main()
 
 
 
+
+
+
+
+	
 
 	///////////////////////////////////////////////////     N O T E S     ///////////////////////////////////////////////////
 

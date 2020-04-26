@@ -17,7 +17,7 @@ public:
 
 	friend istream& operator>> (istream&, Admin&);
 	friend ostream& operator<< (ostream&, Admin&);
-	friend ifstream& operator>> (ifstream&, Admin);
+	friend ifstream& operator>> (ifstream&, Admin&);
 	friend ofstream& operator<< (ofstream&, Admin&);
 };
 

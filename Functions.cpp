@@ -19,12 +19,12 @@ ostream& operator<< (ostream& out, Admin& a)
     return out;
 }
 
-ifstream& operator>> (ifstream& fin, Admin a)
+ifstream& operator>> (ifstream& fin, Admin& a)
 {
-    a.login = encryptDecrypt(a.login);
-    a.password = encryptDecrypt(a.password);
     fin >> a.login;
     fin >> a.password;
+    a.login = encryptDecrypt(a.login);
+    a.password = encryptDecrypt(a.password);
     return fin;
 }
 
