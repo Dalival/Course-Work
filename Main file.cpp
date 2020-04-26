@@ -27,6 +27,9 @@ int main()
 	if (fin.is_open())
 		fin >> buffa;
 	cout << "My user from file: " << buffa << ' ' << buffa.password;
+	
+	
+	return 0;
 
 	/*ifstream fin;
 	fin.open("Administrators.txt");
