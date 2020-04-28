@@ -2,16 +2,16 @@
 
 using namespace std;
 
+vector<Admin> veca;
+vector<Brigade> vecb;
+vector<Order> veco;
+
+Admin buffa;
+Brigade buffb;
+Order buffo;
+
 int main()
 {
-	vector<Admin> veca;
-	vector<Brigade> vecb;
-	vector<Order> veco;
-
-	Admin buffa;
-	Brigade buffb;
-	Order buffo;
-	
 	ifstream fin;
 	fin.open("administrators.txt");
 	if (fin.is_open())
@@ -45,10 +45,6 @@ int main()
 		}
 	}
 	fin.close();
-
-
-
-
 
 
 

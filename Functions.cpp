@@ -1,6 +1,14 @@
 #pragma once
 #include "Classes.h"
 
+extern vector<Admin> veca;
+extern vector<Brigade> vecb;
+extern vector<Order> veco;
+
+extern Admin buffa;
+extern Brigade buffb;
+extern Order buffo;
+
 //////////////////// ADMIN'S METHODS ////////////////////
 
 istream& operator>> (istream& in, Admin& a)
@@ -494,4 +502,106 @@ string encryptDecrypt(string toEncrypt) {
     for (int i = 0; i < toEncrypt.size(); i++)
         output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))];
     return output;
+}
+
+bool clean_password(string& s)
+{
+    for (char ch : s) {
+        if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+            continue;
+        else
+            return false;
+    }
+    return true;
+}
+
+bool password_size(string& s)
+{
+    return (s.size() >= 8 && s.size() <= 24);
+}
+
+/*int main()
+{
+    string rpassword;
+    getline(cin, rpassword);
+    while (!clean_password(rpassword))
+    {
+        cout << "\nPassword might include only numbers and latin letters. Try again:\n\n";
+        getline(cin, rpassword);
+    }
+    while (!password_size(rpassword))
+    {
+        cout << "\nPassword must be 8-24 symbols. Try again:\n\n";
+        getline(cin, rpassword);
+    }
+    cout << "Successfull!" << endl;
+}*/
+
+//////////////////// MENUS ////////////////////
+
+void main_menu()
+{
+	system("cls");
+	cout << "MAIN MENU" << endl << endl;
+	cout << "1 -> Show the list of brigades\n" << "2 -> Show the list of orders\n" << "3 -> Sign in as an administrator\n" << "4 -> Exit\n\n";
+	while (true)
+	{
+		switch (char ch = _getch())
+		{
+		case '1':
+			show_brigades();
+			break;
+		case '2':
+			show_orders();
+			break;
+		case '3':
+			sign_in();
+			break;
+		case '4':
+			cout << "Exitting ";
+			Sleep(900);
+			cout << ". ";
+			Sleep(900);
+			cout << ". ";
+			Sleep(900);
+			cout << '. ';
+			Sleep(900);
+			exit(0);
+		default:
+			continue;
+		}
+        break;
+	}
+}
+
+void show_brigades()
+{
+    system("cls");
+    for (int i = 0; i < vecb.size(); i++)
+    {
+        cout << vecb[i] << endl;
+    }
+    cout << endl << "1 -> Show TOP-3 brigades" << endl << "2 -> Quit";
+    while (true)
+    {
+        switch (char ch = _getch())
+        {
+        case '1':
+            system("cls");
+            show_top_brigades(vecb);
+            break;
+        case '2':
+            main_menu();
+        default:
+            continue;
+        }
+        break;
+    }
+}
+
+void show_top_brigades(vector<Brigade> vec)
+{
+    sort(vec.begin(), vec.end(), [](Brigade a, Brigade b) { return a.completed > b.completed; });
+    for (int i = size(vec) - 1; i > size(vec) - 3; i--)
+        cout << vec[i] << endl;
 }

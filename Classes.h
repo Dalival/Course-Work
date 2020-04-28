@@ -6,6 +6,8 @@
 #include <conio.h>
 #include <sstream>
 #include <Windows.h>
+#include <algorithm>
+#include <functional>
 
 using namespace std;
 
@@ -65,3 +67,13 @@ string enter_date();
 void delete_deleted(vector<Brigade>&);
 
 string encryptDecrypt(string);
+
+bool clean_password(string&);
+
+bool password_size(string&);
+
+void main_menu();
+
+void show_brigades();
+
+void show_top_brigades(vector<Brigade>);
