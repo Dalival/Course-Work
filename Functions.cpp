@@ -60,17 +60,16 @@ ifstream& operator>> (ifstream& fin, Brigade& b)
 {
     if (fin.peek() == EOF)
     {
-        std::cout << "EOF!!\n";
+        cout << "EOF!!\n";
         return fin;
     }
-    std::string temp;
+    string temp;
     getline(fin, b.name);
     getline(fin, temp);
-    b.people = std::stoi(temp);
+    b.people = stoi(temp);
     getline(fin, b.order);
     getline(fin, temp);
-    b.completed = std::stoi(temp);
-    cout << "Read the brigade with " << b.completed << " orders " << endl;
+    b.completed = stoi(temp);
     return fin;
 }
 
@@ -195,15 +194,24 @@ ostream& operator<< (ostream& out, Order& o)
 
 ifstream& operator>> (ifstream& fin, Order& o)
 {
-    fin >> o.id;
+    if (fin.peek() == EOF)
+    {
+        cout << "EOF!!\n";
+        return fin;
+    }
+    string temp;
+    getline(fin, temp);
+    o.id = stoi(temp);
     getline(fin, o.customer);
     getline(fin, o.address);
-    fin >> o.area;
-    fin >> o.cost;
+    getline(fin, temp);
+    o.area = stoi(temp);
+    getline(fin, temp);
+    o.cost = stoi(temp);
     getline(fin, o.deadline);
     getline(fin, o.maintainer);
-    fin >> o.isCompleted;
-   
+    getline(fin, temp);
+    o.isCompleted = stoi(temp);
     return fin;
 }
 
@@ -552,9 +560,9 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 		case '2':
 			show_orders(vecb, veco, veca);
 			break;
-		/*case '3':
-			sign_in();
-			break;*/
+		case '3':
+			sign_in(vecb, veco, veca);
+			break;
 		case '4':
 			cout << "Exitting ";
 			Sleep(600);
