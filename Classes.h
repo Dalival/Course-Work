@@ -76,6 +76,6 @@ void main_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void show_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
-void show_top_brigades(vector<Brigade>, vector<Order>&, vector<Admin>&);
+void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void show_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&);
