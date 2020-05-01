@@ -20,8 +20,8 @@ ostream& operator<< (ostream& out, Admin& a)
 
 ifstream& operator>> (ifstream& fin, Admin& a)
 {
-    fin >> a.login;
-    fin >> a.password;
+    getline(fin, a.login);
+    getline(fin, a.password);
     a.login = encryptDecrypt(a.login);
     a.password = encryptDecrypt(a.password);
     return fin;
