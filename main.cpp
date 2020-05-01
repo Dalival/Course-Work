@@ -50,7 +50,7 @@ int main()
 		fout << br;
 	}
 	fout.close();
-	fout.open("administrators.txt", ofstream::app);              //ÇÀÏÈÑÜ ÒÅÑÒÎÂÛÕ ÎÁÚÅÊÎÒÂ Â ÔÀÉË
+	fout.open("administrators.txt", ofstream::app);              //RECORDING TEST OBJECTS IN FILE
 	if (fout.is_open())
 	{
 		Admin adm;

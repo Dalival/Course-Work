@@ -580,7 +580,6 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
             switch (char ch = _getch())
             {
             case '1':
-                system("cls");
                 show_top_brigades(vecb, veco, veca);
                 break;
             case '2':
@@ -601,6 +600,7 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 
 void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
+    system("cls");
     vector<Brigade> top = vecb;
     sort(top.begin(), top.end(), [](Brigade a, Brigade b) { return a.completed > b.completed; });
     for (unsigned int i = size(top) - 1; i > size(top) - 3; i--)
