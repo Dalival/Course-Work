@@ -1,0 +1,16 @@
+Alpha
+6
+no active order
+5
+Beta
+12
+no active order
+7
+Gumma
+4
+no active order
+1
+Tetta
+8
+no active order
+2

@@ -1,14 +1,6 @@
 #pragma once
 #include "Classes.h"
 
-extern vector<Admin> veca;
-extern vector<Brigade> vecb;
-extern vector<Order> veco;
-
-extern Admin buffa;
-extern Brigade buffb;
-extern Order buffo;
-
 //////////////////// ADMIN'S METHODS ////////////////////
 
 istream& operator>> (istream& in, Admin& a)
@@ -67,7 +59,7 @@ ostream& operator<< (ostream& out, Brigade& b)
 
 ifstream& operator>> (ifstream& fin, Brigade& b)
 {
-    fin >> b.name;
+    getline(fin, b.name);
     fin >> b.people;
     fin >> b.order;
     fin >> b.completed;
@@ -196,12 +188,12 @@ ostream& operator<< (ostream& out, Order& o)
 ifstream& operator>> (ifstream& fin, Order& o)
 {
     fin >> o.id;
-    fin >> o.customer;
-    fin >> o.address;
+    getline(fin, o.customer);
+    getline(fin, o.address);
     fin >> o.area;
     fin >> o.cost;
-    fin >> o.deadline;
-    fin >> o.maintainer;
+    getline(fin, o.deadline);
+    getline(fin, o.maintainer);
     fin >> o.isCompleted;
    
     return fin;
@@ -484,7 +476,7 @@ void delete_deleted(vector<Brigade>& vec)
 {
     vec.erase(remove_if(vec.begin(), vec.end(), [](Brigade br) { return br.people < 0; }), vec.end());
     vec.shrink_to_fit();
-    for (int i = 0; i < vec.size(); i++)
+    for (unsigned int i = 0; i < vec.size(); i++)
         cout << vec[i] << endl;
 }
 
@@ -492,14 +484,14 @@ void delete_deleted(vector<Order>& vec)
 {
     vec.erase(remove_if(vec.begin(), vec.end(), [](Order ord) { return ord.cost < 0; }), vec.end());
     vec.shrink_to_fit();
-    for (int i = 0; i < vec.size(); i++)
+    for (unsigned int i = 0; i < vec.size(); i++)
         cout << vec[i] << endl;
 }
 
 string encryptDecrypt(string toEncrypt) {
     char key[3] = { 'F', 'E', 'A' }; // my initials
     string output = toEncrypt;
-    for (int i = 0; i < toEncrypt.size(); i++)
+    for (unsigned int i = 0; i < toEncrypt.size(); i++)
         output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))];
     return output;
 }
@@ -539,7 +531,7 @@ bool password_size(string& s)
 
 //////////////////// MENUS ////////////////////
 
-void main_menu()
+void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
 	system("cls");
 	cout << "MAIN MENU" << endl << endl;
@@ -549,23 +541,23 @@ void main_menu()
 		switch (char ch = _getch())
 		{
 		case '1':
-			show_brigades();
+			show_brigades(vecb, veco, veca);
 			break;
 		case '2':
-			show_orders();
+			show_orders(vecb, veco, veca);
 			break;
-		case '3':
+		/*case '3':
 			sign_in();
-			break;
+			break;*/
 		case '4':
 			cout << "Exitting ";
-			Sleep(900);
+			Sleep(600);
 			cout << ". ";
-			Sleep(900);
+			Sleep(600);
 			cout << ". ";
-			Sleep(900);
-			cout << '. ';
-			Sleep(900);
+			Sleep(600);
+			cout << ". ";
+			Sleep(600);
 			exit(0);
 		default:
 			continue;
@@ -574,34 +566,58 @@ void main_menu()
 	}
 }
 
-void show_brigades()
+void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
     system("cls");
-    for (int i = 0; i < vecb.size(); i++)
+    if (size(vecb) >= 0)
     {
-        cout << vecb[i] << endl;
-    }
-    cout << endl << "1 -> Show TOP-3 brigades" << endl << "2 -> Quit";
-    while (true)
-    {
-        switch (char ch = _getch())
+        for (unsigned int i = 0; i < vecb.size(); i++)
         {
-        case '1':
-            system("cls");
-            show_top_brigades(vecb);
-            break;
-        case '2':
-            main_menu();
-        default:
-            continue;
+            cout << vecb[i] << endl;
         }
-        break;
+        cout << endl << "1 -> Show TOP-3 brigades" << endl << "2 -> Quit";
+        while (true)
+        {
+            switch (char ch = _getch())
+            {
+            case '1':
+                system("cls");
+                show_top_brigades(vecb, veco, veca);
+                break;
+            case '2':
+                main_menu(vecb, veco, veca);
+            default:
+                continue;
+            }
+            break;
+        }
+    }
+    else
+    {
+        cout << "There are no registered brigades!\n" << "Press anu key to quit.";
+        char ch = _getch();
+        main_menu(vecb, veco, veca);
     }
 }
 
-void show_top_brigades(vector<Brigade> vec)
+void show_top_brigades(vector<Brigade> vecb, vector<Order>& veco, vector<Admin>& veca)  //vecb isn't a reference, because I don't want to sort the original vector
 {
-    sort(vec.begin(), vec.end(), [](Brigade a, Brigade b) { return a.completed > b.completed; });
-    for (int i = size(vec) - 1; i > size(vec) - 3; i--)
-        cout << vec[i] << endl;
+    sort(vecb.begin(), vecb.end(), [](Brigade a, Brigade b) { return a.completed > b.completed; });
+    for (unsigned int i = size(vecb) - 1; i > size(vecb) - 3; i--)
+        cout << vecb[i] << endl;
+    cout << "\nPress any key to quit.";
+    char ch = _getch();
+    main_menu(vecb, veco, veca);
+}
+
+void show_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
+{
+    system("cls");
+    for (unsigned int i = 0; i < veco.size(); i++)
+    {
+        cout << veco[i] << endl;
+    }
+    cout << endl << "Press any key to quit.";
+    char ch = _getch();
+    main_menu(vecb, veco, veca);
 }

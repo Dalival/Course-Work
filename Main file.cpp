@@ -1,17 +1,16 @@
 #include "Classes.h"
-
 using namespace std;
-
-vector<Admin> veca;
-vector<Brigade> vecb;
-vector<Order> veco;
-
-Admin buffa;
-Brigade buffb;
-Order buffo;
 
 int main()
 {
+	vector<Admin> veca;
+	vector<Brigade> vecb;
+	vector<Order> veco;
+
+	Admin buffa;
+	Brigade buffb;
+	Order buffo;
+
 	ifstream fin;
 	fin.open("administrators.txt");
 	if (fin.is_open())
@@ -46,16 +45,36 @@ int main()
 	}
 	fin.close();
 
+	main_menu(vecb, veco, veca);
 
 
 
 
-
-
-
-	
 
 	///////////////////////////////////////////////////     N O T E S     ///////////////////////////////////////////////////
+
+	/*ofstream fout;
+	fout.open("brigades.txt", ofstream::app);
+	if (fout.is_open())
+	{
+		Brigade br;
+		fout << br;
+	}
+	fout.close();
+	fout.open("administrators.txt", ofstream::app);              //ÇÀÏÈÑÜ ÒÅÑÒÎÂÛÕ ÎÁÚÅÊÎÒÂ Â ÔÀÉË
+	if (fout.is_open())
+	{
+		Admin adm;
+		fout << adm;
+	}
+	fout.close();
+	fout.open("orders.txt", ofstream::app);
+	if (fout.is_open())
+	{
+		Order ord;
+		fout << ord;
+	}
+	fout.close();*/
 
 	/*vector<Brigade> bvec;
 	Brigade bbuf;

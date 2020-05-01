@@ -1,0 +1,30 @@
+1234
+Plyatika
+Sovetskaya 54
+150
+7750
+no deadline
+no maintainer
+0
+1234
+EPUM
+Griboedova 15
+30
+2700
+no deadline
+no maintainer
+0
+GiveAway
+Bel'skogo 39
+85
+4700
+no deadline
+no maintainer
+0
+Vochi
+Karbisheva 25
+54
+3500
+no deadline
+no maintainer
+0
