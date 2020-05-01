@@ -13,35 +13,24 @@ int main()
 
 	ifstream fin;
 	fin.open("administrators.txt");
-	if (fin.is_open())
-	{
-		for (int i = 0; !fin.eof(); i++)
-		{
-			fin >> buffa;
-			veca.push_back(buffa);
-		}
-	}
-	fin.close();
-
+	while(fin)
+    {
+        fin >> buffa;
+        veca.push_back(buffa);
+    }
+    fin.close();
 	fin.open("brigades.txt");
-	if (fin.is_open())
+	while(fin)
 	{
-		for (int i = 0; !fin.eof(); i++)
-		{
-			fin >> buffb;
-			vecb.push_back(buffb);
-		}
+        fin >> buffb;
+        vecb.push_back(buffb);
 	}
 	fin.close();
-
 	fin.open("orders.txt");
-	if (fin.is_open())
-	{
-		for (int i = 0; !fin.eof(); i++)
-		{
-			fin >> buffo;
-			veco.push_back(buffo);
-		}
+	while(fin)
+    {
+        fin >> buffo;
+        veco.push_back(buffo);
 	}
 	fin.close();
 

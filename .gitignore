@@ -338,3 +338,12 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+#Cmake files
+.idea
+**/CMakeFiles/**
+**/Makefile
+**/CmakeCache.txt
+**/cmake_install.cmake
+**/CourseWork.cbp
+**/cmake-build-*/**

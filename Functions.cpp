@@ -1,4 +1,3 @@
-#pragma once
 #include "Classes.h"
 
 //////////////////// ADMIN'S METHODS ////////////////////
