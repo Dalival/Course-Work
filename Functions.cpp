@@ -528,7 +528,7 @@ bool password_size(string& s)
     cout << "Successfull!" << endl;
 }*/
 
-//////////////////// MENUS ////////////////////
+//////////////////// MENU ////////////////////
 
 void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
@@ -620,4 +620,44 @@ void show_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca
     cout << endl << "Press any key to quit.";
     char ch = _getch();
     main_menu(vecb, veco, veca);
+}
+
+void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
+{
+    string logpass;
+    system("cls");
+    while (true)
+    {
+        cout << "Write quit to quit.\nLogin: ";
+        getline(cin, logpass);
+        int i;
+        for (i = 0; i < size(veca); i++)
+        {
+            if (logpass == veca[i].login)
+            {
+                while (true)
+                {
+                    cout << "Password: ";
+                    getline(cin, logpass);
+                    if (logpass == veca[i].password)
+                    {
+                        cout << "Successfull! ";
+                        Sleep(400);
+                        cout << ". ";
+                        Sleep(400);
+                        cout << ". ";
+                        Sleep(400);
+                        cout << ". ";
+                        Sleep(400);
+                        admin_menu(vecb, veco, veca);
+                    }
+                    else
+                        system("cls");
+                    cout << "Wrong password! Try again." << endl << endl;
+                }
+            }
+        }
+        system("cls");
+        cout << "Wrong login! Such administrator doesn't exist.";
+    }
 }
