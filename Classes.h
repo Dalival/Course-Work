@@ -79,3 +79,17 @@ void show_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void show_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&);
+
+void sign_in(vector<Brigade>&, vector<Order>&, vector<Admin>&);
+
+void admin_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&, string);
+
+void manage_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
+
+void manage_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
+
+void edit_account(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
+
+void sign_up(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
+
+void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
