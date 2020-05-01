@@ -58,11 +58,19 @@ ostream& operator<< (ostream& out, Brigade& b)
 
 ifstream& operator>> (ifstream& fin, Brigade& b)
 {
+    if (fin.peek() == EOF)
+    {
+        std::cout << "EOF!!\n";
+        return fin;
+    }
+    std::string temp;
     getline(fin, b.name);
-    fin >> b.people;
+    getline(fin, temp);
+    b.people = std::stoi(temp);
     getline(fin, b.order);
-    fin >> b.completed;
-  
+    getline(fin, temp);
+    b.completed = std::stoi(temp);
+    cout << "Read the brigade with " << b.completed << " orders " << endl;
     return fin;
 }
 
@@ -123,8 +131,10 @@ void Brigade::edit()
 				break;
 			case 'n':
 				i = 2;
+				break;
 			default:
 				i = 5;
+				break;
 			}
 		} while (i == 5);
 	}
@@ -565,7 +575,7 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
     system("cls");
-    if (size(vecb) >= 0)
+    if (size(vecb) > 0)
     {
         for (auto & i : vecb) //for every reference to element i in vecb -> cout i
             cout << i << endl;
