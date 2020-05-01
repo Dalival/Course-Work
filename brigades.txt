@@ -1,6 +1,6 @@
 Alpha
 6
-Order tratata
+order tratata
 5
 Beta
 12

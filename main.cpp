@@ -13,27 +13,18 @@ int main()
 
 	ifstream fin;
 	fin.open("administrators.txt");
-	while(fin)
-    {
-        fin >> buffa;
+	while(fin >> buffa)
         veca.push_back(buffa);
-    }
     fin.close();
 	fin.open("brigades.txt");
-	while(fin)
-	{
-        fin >> buffb;
+	while(fin >> buffb)
         vecb.push_back(buffb);
-	}
 	fin.close();
 	fin.open("orders.txt");
-	while(fin)
-    {
-        fin >> buffo;
+	while(fin >> buffo)
         veco.push_back(buffo);
-	}
 	fin.close();
-
+	_getch();
 	main_menu(vecb, veco, veca);
 
 
