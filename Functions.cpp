@@ -599,12 +599,11 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
     }
 }
 
-void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
+void show_top_brigades(vector<Brigade> vecb, vector<Order>& veco, vector<Admin>& veca)  //vecb isn't a reference, because I don't want to sort the original vector
 {
-    vector<Brigade> top = vecb; //I don't want to sort the original vector
-    sort(top.begin(), top.end(), [](Brigade a, Brigade b) { return a.completed > b.completed; });
-    for (unsigned int i = size(top) - 1; i > size(top) - 3; i--)
-        cout << top[i] << endl;
+    sort(vecb.begin(), vecb.end(), [](Brigade a, Brigade b) { return a.completed > b.completed; });
+    for (unsigned int i = size(vecb) - 1; i > size(vecb) - 3; i--)
+        cout << vecb[i] << endl;
     cout << "\nPress any key to quit.";
     char ch = _getch();
     main_menu(vecb, veco, veca);
