@@ -60,7 +60,7 @@ ifstream& operator>> (ifstream& fin, Brigade& b)
 {
     getline(fin, b.name);
     fin >> b.people;
-    fin >> b.order;
+    getline(fin, b.order);
     fin >> b.completed;
   
     return fin;
