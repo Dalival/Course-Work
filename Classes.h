@@ -60,13 +60,13 @@ public:
 };
 
 template <typename T>
-void scan(T&, string);
+void scan(T&,const string&);
 
 string enter_date();
 
 void delete_deleted(vector<Brigade>&);
 
-string encryptDecrypt(string);
+string encryptDecrypt(const string&);
 
 bool clean_password(string&);
 

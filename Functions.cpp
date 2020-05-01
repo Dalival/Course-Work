@@ -79,7 +79,6 @@ ofstream& operator<< (ofstream& fout, Brigade& b)
 void Brigade::edit()
 {
 	int i = 1;
-	char yn;
 
 	while (i == 1)
 	{
@@ -115,8 +114,8 @@ void Brigade::edit()
 		do
 		{
 			cout << endl << "Do you want to edit something else? y/n";
-			yn = _getch();
-			switch (yn)
+
+			switch (_getch())
 			{
 			case 'y':
 				i = 1;
@@ -215,7 +214,6 @@ ofstream& operator<< (ofstream& fout, Order& o)
 void Order::edit()
 {
 	int i = 1;
-	char yn;
 
 	while (i == 1)
 	{
@@ -268,8 +266,7 @@ void Order::edit()
         do
         {
             cout << endl << "Do you want to edit something else? y/n";
-            yn = _getch();
-            switch (yn)
+            switch (_getch()) //When getch returns, it becomes a char. This char is used in switch, it can be 'y' or 'n' but can't be saved
             {
             case 'y':
                 i = 1;
@@ -329,7 +326,7 @@ string enter_date()
         current_m = 12;
     if (current_m == -1)
     {
-        cout << "\n     Critical ERROR. I can't understand what month is now! Exetting...";
+        cout << "\n     Critical ERROR. I can't understand what month is now! Exiting...";
         Sleep(3500);
         exit(-1);
     }
@@ -454,7 +451,7 @@ string enter_date()
 }
 
 template <typename T>
-void scan(T& a, string str)
+void scan(T& a, const string& str) //We don't change this string, it should be a reference
 {
     while (true)
     {
@@ -475,19 +472,19 @@ void delete_deleted(vector<Brigade>& vec)
 {
     vec.erase(remove_if(vec.begin(), vec.end(), [](Brigade br) { return br.people < 0; }), vec.end());
     vec.shrink_to_fit();
-    for (unsigned int i = 0; i < vec.size(); i++)
-        cout << vec[i] << endl;
+    for (auto & i : vec) //For EVERY reference to object I in VEC
+        cout << i << endl; //Cout this I
 }
 
 void delete_deleted(vector<Order>& vec)
 {
-    vec.erase(remove_if(vec.begin(), vec.end(), [](Order ord) { return ord.cost < 0; }), vec.end());
+    vec.erase(remove_if(vec.begin(), vec.end(), [](const Order& ord) { return ord.cost < 0; }), vec.end());
     vec.shrink_to_fit();
-    for (unsigned int i = 0; i < vec.size(); i++)
-        cout << vec[i] << endl;
+    for (auto & i : vec)
+        cout << i << endl;
 }
 
-string encryptDecrypt(string toEncrypt) {
+string encryptDecrypt(const string& toEncrypt) {
     char key[3] = { 'F', 'E', 'A' }; // my initials
     string output = toEncrypt;
     for (unsigned int i = 0; i < toEncrypt.size(); i++)
@@ -537,7 +534,7 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 	cout << "1 -> Show the list of brigades\n" << "2 -> Show the list of orders\n" << "3 -> Sign in as an administrator\n" << "4 -> Exit\n\n";
 	while (true)
 	{
-		switch (char ch = _getch())
+		switch (_getch())
 		{
 		case '1':
 			show_brigades(vecb, veco, veca);
@@ -570,14 +567,12 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
     system("cls");
     if (size(vecb) >= 0)
     {
-        for (unsigned int i = 0; i < vecb.size(); i++)
-        {
-            cout << vecb[i] << endl;
-        }
+        for (auto & i : vecb) //for every reference to element i in vecb -> cout i
+            cout << i << endl;
         cout << endl << "1 -> Show TOP-3 brigades" << endl << "2 -> Quit";
         while (true)
         {
-            switch (char ch = _getch())
+            switch (_getch())
             {
             case '1':
                 show_top_brigades(vecb, veco, veca);
@@ -593,7 +588,7 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
     else
     {
         cout << "There are no registered brigades!\n" << "Press anu key to quit.";
-        char ch = _getch();
+        _getch();
         main_menu(vecb, veco, veca);
     }
 }
@@ -602,22 +597,20 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
 {
     system("cls");
     vector<Brigade> top = vecb;
-    sort(top.begin(), top.end(), [](Brigade a, Brigade b) { return a.completed > b.completed; });
+    sort(top.begin(), top.end(), [](const Brigade& a,const Brigade& b) { return a.completed > b.completed; });
     for (unsigned int i = size(top) - 1; i > size(top) - 3; i--)
         cout << top[i] << endl;
     cout << "\nPress any key to quit.";
-    char ch = _getch();
+    _getch();
     main_menu(vecb, veco, veca);
 }
 
 void show_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
     system("cls");
-    for (unsigned int i = 0; i < veco.size(); i++)
-    {
-        cout << veco[i] << endl;
-    }
+    for (auto & i : veco)//for every reference to element i in veco -> cout i
+        cout << i << endl;
     cout << endl << "Press any key to quit.";
-    char ch = _getch();
+    _getch();
     main_menu(vecb, veco, veca);
 }
