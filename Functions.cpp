@@ -4,11 +4,56 @@
 
 istream& operator>> (istream& in, Admin& a)
 {
-    cout << "Enter login: ";
-    getline(cin, a.login);
-    cout << "Enter password: ";
-    getline(cin, a.password);
-    cout << "\nAdministrator " << a.login << " was successfully registrated!" << endl << endl;
+    string input;
+    while (true)
+    {
+        cout << "Enter the login of new administrator: ";
+        getline(cin, input);
+        if (login_size(input))
+        {
+            if (clean_login(input))
+            {
+                a.login = input;
+                break;
+            }
+            else
+            {
+                system("cls");
+                cout << "Login can include latin letters, numbers and symbols \"-\" and \"_\". Try again.\n";
+            }
+        }
+        else
+        {
+            system("cls");
+            cout << "Login should include 3-30 symblos. Try again.\n";
+        }
+	}
+
+	while (true)
+	{
+		cout << "Enter the password of new administrator: ";
+		getline(cin, input);
+		if (password_size(input))
+		{
+			if (clean_password(input))
+			{
+				a.password = input;
+				break;
+			}
+            else
+            {
+                system("cls");
+                cout << "Password can include latin letters and numbers. Try again.\n";
+            }
+		}
+        else
+        {
+            system("cls");
+            cout << "Password should include 8-24 symblos. Try again.\n";
+        }
+	}
+    system("cls");
+    cout << "\nAdministrator " << a.login << " was successfully registrated!";
     return in;
 }
 
@@ -32,6 +77,11 @@ ofstream& operator<< (ofstream& fout, Admin& a)
     fout << encryptDecrypt(a.login) << endl;
     fout << encryptDecrypt(a.password) << endl;
     return fout;
+}
+
+void Admin::make_deleted()
+{
+    login = "...";
 }
 
 //////////////////// BRIGADE'S METHODS ////////////////////
@@ -498,6 +548,12 @@ void delete_deleted(vector<Order>& vec)
     vec.shrink_to_fit();
 }
 
+void delete_deleted(vector<Admin>& vec)
+{
+    vec.erase(remove_if(vec.begin(), vec.end(), [](Admin adm) { return adm.login == "..."; }), vec.end());
+    vec.shrink_to_fit();
+}
+
 string encryptDecrypt(const string& toEncrypt) {
     char key[3] = { 'F', 'E', 'A' }; // my initials
     string output = toEncrypt;
@@ -693,39 +749,37 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 
 void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
 {
-    system("cls");
-    cout << "Welcome, " << veca[i].login <<  "\n\nMAIN MENU\n\n";
-    cout << "1 -> Show the list of brigades\n" << "2 -> Show the list of orders\n" << "3 -> Edit my account\n" << "4 -> Register a new administrator\n" << "5 -> Exit\n\n";
-    while (true)
-    {
-        switch (_getch())
-        {
-        case '1':
-            manage_brigades(vecb, veco, veca, i);
-            break;
-        case '2':
-            manage_orders(vecb, veco, veca, i);
-            break;
-        case '3':
-            edit_account(vecb, veco, veca, i);
-            break;
-        case '4':
-            sign_up(vecb, veco, veca, i);
-        case '5':
-            cout << "Exitting ";
-            Sleep(600);
-            cout << ". ";
-            Sleep(600);
-            cout << ". ";
-            Sleep(600);
-            cout << ". ";
-            Sleep(600);
-            exit(0);
-        default:
-            continue;
-        }
-        break;
-    }
+	while (true)
+	{
+		system("cls");
+		cout << "Welcome, " << veca[i].login << "\n\nMAIN MENU\n\n";
+		cout << "1 -> Show the list of brigades\n" << "2 -> Show the list of orders\n" << "3 -> Edit my account\n" << "4 -> Register a new administrator\n" << "5 -> Exit\n\n";
+		switch (_getch())
+		{
+		case '1':
+			manage_brigades(vecb, veco, veca, i);
+			break;
+		case '2':
+			manage_orders(vecb, veco, veca, i);
+			break;
+		case '3':
+			edit_account(vecb, veco, veca, i);
+			break;
+		case '4':
+			sign_up(vecb, veco, veca, i);
+			break;
+		case '5':
+			cout << "Exitting ";
+			Sleep(600);
+			cout << ". ";
+			Sleep(600);
+			cout << ". ";
+			Sleep(600);
+			cout << ". ";
+			Sleep(600);
+			exit(0);
+		}
+	}
 }
 
 void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
@@ -904,33 +958,101 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 
 void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
 {
-    string logpass;
-    system("cls");
-    cout << "1 -> Change login\n" << "2 -> Change password";
-    switch (_getch())
+    string input;
+    while (true)
     {
-    case '1':
-        while (true)
+        system("cls");
+        cout << "1 -> Change login\n" << "2 -> Change password\n" << "3 -> Delete this account (careful!)\n" << "4 -> Quit\n";
+        switch (_getch())
         {
-            cout << "Enter new login: ";
-            getline(cin, logpass);
-            if (logpass == "quit" || logpass == "Quit")
-                edit_account(vecb, veco, veca, i);
-            if (login_size(logpass))
+        case '1':
+            while (true)
             {
-                if (clean_login(logpass))
-                    veca[i].login = logpass;
+                cout << "Enter new login: ";
+                getline(cin, input);
+                if (input == "quit" || input == "Quit")
+                    break;
+                if (login_size(input))
+                {
+                    if (clean_login(input))
+                    {
+                        veca[i].login = input;
+                        break;
+                    }
+                    else
+                        cout << "Login can include latin letters, numbers and symbols \"-\" and \"_\". Try again or write \"quit\" to quit.\n";
+                }
                 else
-                    cout << "Login can include latin letters, numbers and symbols \"-\" and \"_\". Try again or write \"quit\" to quit.";
+                    cout << "Login should include 3-30 symblos. Try again or write \"quit\" to quit.\n";
+            }
+            break;
+
+        case '2':
+            while (true)
+			{
+				cout << "Enter new password: ";
+				getline(cin, input);
+				if (input == "quit" || input == "Quit")
+					break;
+				if (password_size(input))
+				{
+					if (clean_password(input))
+					{
+						veca[i].password = input;
+						break;
+					}
+					else
+						cout << "Password can include latin letters and numbers. Try again or write \"quit\" to quit.\n";
+				}
+				else
+					cout << "Password should include 8-24 symblos. Try again or write \"quit\" to quit.\n";
+			}
+            break;
+
+        case '3':
+            if (size(veca) == 1)
+            {
+                cout << "You are the only administrator! Your account can't be deleted. Press any key to quit.";
+                _getch();
             }
             else
-                cout << "Login should include 3-30 symblos. Try again or write \"quit\" to quit.";
+            {
+                cout << "Are you sure to delete your account? It won't be possible to cancel! Enter \"DELETE\" to confirm or anything else to cancel.";
+                getline(cin, input);
+                if (input == "DELETE")
+                {
+                    veca[i].make_deleted();
+                    cout << "\n\nDeleting ";
+                    Sleep(600);
+                    cout << ". ";
+                    Sleep(600);
+                    cout << ". ";
+                    Sleep(600);
+                    cout << ". ";
+                    Sleep(600);
+                    delete_deleted(veca);
+                    cout << "Successfully deleted.";
+                    Sleep(600);
+                    main_menu(vecb, veco, veca);
+                }
+                else
+                {
+                    cout << "\n\nCanceled.";
+                    Sleep(600);
+                }
+            }
+            break;
+
+        case '4':
+            admin_menu(vecb, veco, veca, i);
         }
-        break;
     }
 }
 
 void sign_up(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
 {
-
+    Admin buffa;
+    system("cls");
+    cin >> buffa;
+    veca.push_back(buffa);
 }

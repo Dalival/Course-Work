@@ -21,6 +21,7 @@ public:
 	friend ostream& operator<< (ostream&, Admin&);
 	friend ifstream& operator>> (ifstream&, Admin&);
 	friend ofstream& operator<< (ofstream&, Admin&);
+	void make_deleted();
 };
 
 class Brigade
@@ -66,11 +67,19 @@ string enter_date();
 
 void delete_deleted(vector<Brigade>&);
 
+void delete_deleted(vector<Order>&);
+
+void delete_deleted(vector<Admin>&);
+
 string encryptDecrypt(const string&);
 
 bool clean_password(string&);
 
 bool password_size(string&);
+
+bool clean_login(string&);
+
+bool login_size(string&);
 
 void main_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
