@@ -24,7 +24,7 @@ int main()
 	while(fin >> buffo)
         veco.push_back(buffo);
 	fin.close();
-	_getch();
+
 	main_menu(vecb, veco, veca);
 
 
@@ -55,6 +55,9 @@ int main()
 		fout << ord;
 	}
 	fout.close();*/
+
+
+
 
 	/*vector<Brigade> bvec;
 	Brigade bbuf;

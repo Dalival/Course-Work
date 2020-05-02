@@ -594,6 +594,18 @@ bool login_size(string& s)
     return (s.size() >= 3 && s.size() <= 30);
 }
 
+template <typename T>
+void sync(vector<T>& vec)
+{
+    ofstream fout;
+    fout.open("administrators.txt", ofstream::app);
+    for (T& i : vec)                                //for every reference to element i in vec
+    {
+        fout << i;
+    }
+    fout.close();
+}
+
 /*int main()
 {
     string rpassword;
@@ -803,7 +815,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                 system("cls");
                 cin >> buffb;
                 vecb.push_back(buffb);
-                sync();
+                sync(vecb);
                 break;
             case '3':
                 while (true)
@@ -817,7 +829,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                         if (name == b.name)
                         {
                             b.edit();
-                            sync();
+                            sync(vecb);
                             manage_brigades(vecb, veco, veca, i);
                         }
                     }
@@ -837,7 +849,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                         {
                             b.make_deleted();
                             delete_deleted(vecb);
-                            sync();
+                            sync(vecb);
                             manage_brigades(vecb, veco, veca, i);
                         }
                     }
@@ -895,7 +907,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                         if (stoi(ID) == o.id)
                         {
                             o.isCompleted = true;
-                            sync();
+                            sync(veco);
                             manage_orders(vecb, veco, veca, i);
                         }
                     }
@@ -905,7 +917,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                 system("cls");
                 cin >> buffo;
                 veco.push_back(buffo);
-                sync();
+                sync(veco);
             case '3':
                 while (true)
                 {
@@ -918,7 +930,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                         if (stoi(ID) == o.id)
                         {
                             o.edit();
-                            sync();
+                            sync(veco);
                             manage_orders(vecb, veco, veca, i);
                         }
                     }
@@ -937,7 +949,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                         {
                             o.make_deleted();
                             delete_deleted(veco);
-                            sync();
+                            sync(veco);
                             manage_orders(vecb, veco, veca, i);
                         }
                     }

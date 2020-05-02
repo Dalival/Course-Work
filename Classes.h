@@ -102,3 +102,6 @@ void edit_account(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 void sign_up(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
+
+template <typename T>
+void sync(vector<T>&);
