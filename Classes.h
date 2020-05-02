@@ -91,7 +91,7 @@ void show_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void sign_in(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
-void admin_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&, string);
+void admin_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
 void manage_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 

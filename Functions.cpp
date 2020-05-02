@@ -696,7 +696,7 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
     system("cls");
     vector<Brigade> top = vecb;
     sort(top.begin(), top.end(), [](const Brigade& a,const Brigade& b) { return a.completed > b.completed; });
-    for (unsigned int i = size(top) - 1; i > size(top) - 3; i--)
+    for (unsigned int i = size(top) - 1; i + 3 > size(top); i--)
         cout << top[i] << endl;
     cout << "\nPress any key to quit.";
     _getch();
