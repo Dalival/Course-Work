@@ -562,6 +562,18 @@ string encryptDecrypt(const string& toEncrypt) {
     return output;
 }
 
+void successfull()
+{
+    cout << "Successfull! ";
+    Sleep(400);
+    cout << ". ";
+    Sleep(400);
+    cout << ". ";
+    Sleep(400);
+    cout << ". ";
+    Sleep(400);
+}
+
 bool clean_password(string& s)
 {
     for (char ch : s) {
@@ -594,12 +606,33 @@ bool login_size(string& s)
     return (s.size() >= 3 && s.size() <= 30);
 }
 
-template <typename T>
-void sync(vector<T>& vec)
+void sync(vector<Admin>& vec)
 {
     ofstream fout;
-    fout.open("administrators.txt", ofstream::app);
-    for (T& i : vec)                                //for every reference to element i in vec
+    fout.open("administrators.txt");
+    for (Admin& i : vec)                                //for every reference to element i in vec
+    {
+        fout << i;
+    }
+    fout.close();
+}
+
+void sync(vector<Order>& vec)
+{
+    ofstream fout;
+    fout.open("orders.txt");
+    for (Order& i : vec)                                //for every reference to element i in vec
+    {
+        fout << i;
+    }
+    fout.close();
+}
+
+void sync(vector<Brigade>& vec)
+{
+    ofstream fout;
+    fout.open("brigades.txt");
+    for (Brigade& i : vec)                                //for every reference to element i in vec
     {
         fout << i;
     }
@@ -696,7 +729,7 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
     system("cls");
     vector<Brigade> top = vecb;
     sort(top.begin(), top.end(), [](const Brigade& a,const Brigade& b) { return a.completed > b.completed; });
-    for (unsigned int i = size(top) - 1; i + 3 > size(top); i--)
+    for (unsigned int i = size(top) - 1; i > size(top) - 3; i--)
         cout << top[i] << endl;
     cout << "\nPress any key to quit.";
     _getch();
@@ -708,7 +741,7 @@ void show_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca
     system("cls");
     for (auto & i : veco)//for every reference to element i in veco -> cout i
         cout << i << endl;
-    cout << endl << "Press any key to quit.";
+    cout << "There are no registrated orders!\n" << "Press any key to quit.";
     _getch();
     main_menu(vecb, veco, veca);
 }
@@ -719,7 +752,7 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
     system("cls");
     while (true)
     {
-        cout << "Write \"quit\" to quit.\nLogin: ";
+        cout << "Write \"quit\" to quit.\n\nLogin: ";
         getline(cin, logpass);
         if (logpass == "quit" || logpass == "Quit")
             main_menu(vecb, veco, veca);
@@ -730,22 +763,12 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
             {
                 while (true)
                 {
-                    cout << "Write \"quit\" to quit.\nPassword: ";
+                    cout << "\nPassword: ";
                     getline(cin, logpass);
                     if (logpass == "quit" || logpass == "Quit")
                         main_menu(vecb, veco, veca);
                     if (logpass == veca[i].password)
-                    {
-                        cout << "Successfull! ";
-                        Sleep(400);
-                        cout << ". ";
-                        Sleep(400);
-                        cout << ". ";
-                        Sleep(400);
-                        cout << ". ";
-                        Sleep(400);
-                        admin_menu(vecb, veco, veca, i);
-                    }
+                        successfull();
                     else
                         system("cls");
                     cout << "Wrong password! Try again." << endl << endl;
@@ -764,7 +787,7 @@ void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca,
 	while (true)
 	{
 		system("cls");
-		cout << "Welcome, " << veca[i].login << "\n\nMAIN MENU\n\n";
+		cout << "Welcome, " << veca[i].login << "!\n\nMAIN MENU\n\n";
 		cout << "1 -> Show the list of brigades\n" << "2 -> Show the list of orders\n" << "3 -> Edit my account\n" << "4 -> Register a new administrator\n" << "5 -> Exit\n\n";
 		switch (_getch())
 		{
@@ -980,7 +1003,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
         case '1':
             while (true)
             {
-                cout << "Enter new login: ";
+                cout << "\nEnter new login: ";
                 getline(cin, input);
                 if (input == "quit" || input == "Quit")
                     break;
@@ -989,6 +1012,8 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
                     if (clean_login(input))
                     {
                         veca[i].login = input;
+                        successfull();
+                        sync(veca);
                         break;
                     }
                     else
@@ -1011,6 +1036,8 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
 					if (clean_password(input))
 					{
 						veca[i].password = input;
+                        successfull();
+                        sync(veca);
 						break;
 					}
 					else
@@ -1045,6 +1072,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
                     delete_deleted(veca);
                     cout << "Successfully deleted.";
                     Sleep(600);
+                    sync(veca);
                     main_menu(vecb, veco, veca);
                 }
                 else

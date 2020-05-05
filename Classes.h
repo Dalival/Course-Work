@@ -103,5 +103,10 @@ void sign_up(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
-template <typename T>
-void sync(vector<T>&);
+void sync(vector<Admin>&);
+
+void sync(vector<Brigade>&);
+
+void sync(vector<Order>&);
+
+void successfull();
