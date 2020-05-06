@@ -15,7 +15,7 @@ int main()
 	fin.open("administrators.txt");
 	while(fin >> buffa)
         veca.push_back(buffa);
-    fin.close();/*
+    fin.close();
 
 	fin.open("brigades.txt");
 	while(fin >> buffb)
@@ -25,7 +25,7 @@ int main()
 	fin.open("orders.txt");
 	while(fin >> buffo)
         veco.push_back(buffo);
-	fin.close();*/
+	fin.close();
 
 	main_menu(vecb, veco, veca);
 }
