@@ -1,5 +1,26 @@
 #include "Classes.h"
 
+
+//////////////////// UTILITY ////////////////////
+
+bool yesOrNo(const string& msg)
+{
+    do
+    {
+        cout << endl << msg << " y/n";
+        switch (_getch())
+        {
+            case 'y':
+                system("cls");
+                return true;
+            case 'n':
+                return false;
+            default:
+                break;
+        }
+    } while (true);
+}
+
 //////////////////// ADMIN'S METHODS ////////////////////
 
 istream& operator>> (istream& in, Admin& a)
@@ -82,7 +103,7 @@ ofstream& operator<< (ofstream& fout, Admin& a)
 
 void Admin::make_deleted()
 {
-    login = "...";
+    login = "..."; //wtf
 }
 
 //////////////////// BRIGADE'S METHODS ////////////////////
@@ -107,17 +128,13 @@ ostream& operator<< (ostream& out, Brigade& b)
     cout << b.people << " people" << endl;
     cout << "Active order: " << b.order << endl;
     cout << b.completed << " completed orders";
-	
     return out;
 }
 
 ifstream& operator>> (ifstream& fin, Brigade& b)
 {
     if (fin.peek() == EOF)
-    {
-        fin.ignore(32767, '\n');
         return fin;
-    }
     string temp;
     getline(fin, b.name);
     getline(fin, temp);
@@ -134,63 +151,40 @@ ofstream& operator<< (ofstream& fout, Brigade& b)
     fout << b.people << endl;
     fout << b.order << endl;
     fout << b.completed << endl;
-   
     return fout;
 }
 
 void Brigade::edit()
 {
-	int i = 1;
-
-	while (i == 1)
+	while (true)
 	{
         system("cls");
 		cout << "1 -> Edit name \n2 -> Edit number of people \n3 -> Change active order" << endl;
-		i = _getch();
-        system("cls");
-
-		switch (i)
+		switch (_getch())
 		{
-		case '1':
-			cout << "Enter new name: ";
-			getline(cin, name);
-			cout << "New name: " << name;
-			break;
-
-        case '2':
-            scan(people, "Enter how many people are in brigade: ");
-            cout << "Now " << name << " has " << people << " people.";
-            break;
-
-		case '3':
-			cout << "Enter ID of order: ";
-			getline(cin, order);
-			cout << "Now brigade maintain the order " << order;
-			break;
-		default:
-			i = 1;
-			system("cls");
-			continue;
+            case '1':
+                system("cls");
+                cout << "Enter new name: ";
+                getline(cin, name);
+                cout << "New name: " << name;
+                break;
+            case '2':
+                system("cls");
+                scan(people, "Enter how many people are in brigade: ");
+                cout << "Now " << name << " has " << people << " people.";
+                break;
+            case '3':
+                system("cls");
+                cout << "Enter ID of order: ";
+                getline(cin, order);
+                cout << "Now brigade maintain the order " << order;
+                break;
+            default:
+                continue;
 		}
-
-		do
-		{
-			cout << endl << "Do you want to edit something else? y/n";
-
-			switch (_getch())
-			{
-			case 'y':
-				i = 1;
-				system("cls");
-				break;
-			case 'n':
-				i = 2;
-				break;
-			default:
-				i = 5;
-				break;
-			}
-		} while (i == 5);
+        //TODO: Test
+		if (!yesOrNo("Do you want to edit something else?")) return;
+		//If the user said NO it will be inverted to true and we'll exit
 	}
 }
 
@@ -205,7 +199,6 @@ istream& operator>> (istream& in, Order& o)
 {
 	string s;
 	scan(o.id, "Enter ID of the project: ");
-    cin.ignore(32767, '\n');
     system("cls");
 
 	cout << "Enter customer: ";
@@ -226,7 +219,6 @@ istream& operator>> (istream& in, Order& o)
 	cout << "Let's set a deadline.\n";
     o.deadline = enter_date();
     successfull();
-
 	return in;
 }
 
@@ -239,17 +231,13 @@ ostream& operator<< (ostream& out, Order& o)
 	cout << '$' << o.cost << endl;
 	cout << "The deadline is " << o.deadline << endl;
 	cout << "Maintainer - " << o.maintainer << endl;
-
     return out;
 }
 
 ifstream& operator>> (ifstream& fin, Order& o)
 {
     if (fin.peek() == EOF)
-    {
-        fin.ignore(32767, '\n');
         return fin;
-    }
     string temp;
     getline(fin, temp);
     o.id = stoi(temp);
@@ -276,79 +264,55 @@ ofstream& operator<< (ofstream& fout, Order& o)
     fout << o.deadline << endl;
     fout << o.maintainer << endl;
     fout << o.isCompleted << endl;
-
     return fout;
 }
 
 void Order::edit()
 {
-	int i = 1;
-
-	while (i == 1)
+	while (true)
 	{
         system("cls");
 		cout << "1 -> Edit customer \n2 -> Edit address \n3 -> Edit area \n4 -> Edit cost \n5 -> Move deadline \n6 -> Change project maintainer" << endl << endl;
-		i = _getch();
-        system("cls");
-
-		switch (i)
+		switch (_getch())
 		{
 		case '1':
+            system("cls");
 			cout << "Enter new customer: ";
 			getline(cin, customer);
 			cout << "New customer: " << customer;
 			break;
-
 		case '2':
+            system("cls");
 			cout << "Enter new address: ";
 			getline(cin, address);
 			cout << "New address: " << address;
 			break;
-
 		case '3':
+            system("cls");
 			scan(area, "Enter new area: ");
 			cout << "New area: " << area;
 			break;
-
 		case '4':
+            system("cls");
 			scan(cost, "Enter new cost: ");
 			cout << "New cost: " << cost;
 			break;
-
 		case '5':
+            system("cls");
 			cout << "Let's set new deadline.\n";
             deadline = enter_date();
             cout << "\nNew deadline: " << deadline;
 			break;
-
 		case '6':
+            system("cls");
 			cout << "Enter new maintaining brigade: ";
 			getline(cin, maintainer);
 			cout << "New maintainer: " << maintainer;
 			break;
 		default:
-			i = 1;
-			system("cls");
 			continue;
 		}
-
-        cout << endl << "Do you want to edit something else? y/n";
-        do
-        {
-            switch (_getch())
-            {
-            case 'y':
-                i = 1;
-                system("cls");
-                break;
-            case 'n':
-                i = 2;
-                break;
-            default:
-                i = 5;
-            }
-        }
-        while (i == 5);
+		if (!yesOrNo("Do you want to edit something else?")) return;
 	}
 }
 
@@ -526,15 +490,16 @@ void scan(T& a, const string& str) //We don't change this string, it should be a
     {
         cout << str;
         cin >> a;
-        if (cin.fail() || a < 0)
+        if (cin.fail() || a < 0) //TODO: FIX: what if type T is NOT NUMERIC?
         {
             cin.clear();
             cin.ignore(32767, '\n');
-            system("cls");
+            system("cls"); //TODO: We shouldn't do output in the input functions
         }
         else
             break;
     }
+    cin.ignore(32767, '\n');
 }
 
 void delete_deleted(vector<Brigade>& vec)
@@ -577,12 +542,9 @@ void successfull()
 
 bool clean_password(string& s)
 {
-    for (char ch : s) {
-        if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
-            continue;
-        else
+    for (const char& ch : s)
+        if (!isalnum(ch)) // if NOT alphanumeric or - or _ then return false
             return false;
-    }
     return true;
 }
 
@@ -593,12 +555,9 @@ bool password_size(string& s)
 
 bool clean_login(string& s)
 {
-    for (char ch : s) {
-        if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || ch == '-' || ch == '_')
-            continue;
-        else
+    for (const char& ch : s) //reference
+        if (!(isalnum(ch) || ch == '-' || ch == '_')) // if NOT alphanumeric or - or _ then return false
             return false;
-    }
     return true;
 }
 

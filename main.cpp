@@ -1,5 +1,5 @@
 #include "Classes.h"
-using namespace std;
+using namespace std; //Bad practice
 
 int main()
 {

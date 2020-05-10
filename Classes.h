@@ -5,7 +5,7 @@
 #include <vector>
 #include <conio.h>
 #include <sstream>
-#include <Windows.h>
+#include <synchapi.h>
 #include <algorithm>
 #include <functional>
 
