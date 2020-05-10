@@ -11,38 +11,36 @@
 
 using namespace std;
 
-class Admin
+struct Admin
 {
-public:
 	string login = "admin";
 	string password = "password";
 
 	friend istream& operator>> (istream&, Admin&);
-	friend ostream& operator<< (ostream&, Admin&);
+	friend ostream& operator<< (ostream&, const Admin&);
 	friend ifstream& operator>> (ifstream&, Admin&);
-	friend ofstream& operator<< (ofstream&, Admin&);
-	void make_deleted();
+	friend ofstream& operator<< (ofstream&, const Admin&);
+    void make_deleted() {login = "...";} //Inline functions increase performance
+    //This function is IMPLICITLY inline (because it's inside a class code)
 };
 
-class Brigade
+struct Brigade
 {
-public:
 	string name = "no name";
 	int people = 0;
 	string order = "no active order";
 	int completed = 0;
 
 	friend istream& operator>> (istream&, Brigade&);
-	friend ostream& operator<< (ostream&, Brigade&);
+	friend ostream& operator<< (ostream&, const Brigade&);
 	friend ifstream& operator>> (ifstream&, Brigade&);
-	friend ofstream& operator<< (ofstream&, Brigade&);
+	friend ofstream& operator<< (ofstream&, const Brigade&);
 	void edit();
-	void make_deleted();
+    void make_deleted() {people = -10;} //Inline
 };
 
-class Order
+struct Order
 {
-public:
 	int id = 1234;
 	string customer = "no customer";
 	string address = "no address";
@@ -53,15 +51,41 @@ public:
 	bool isCompleted = false;
 
 	friend istream& operator>> (istream&, Order&);
-	friend ostream& operator<< (ostream&, Order&);
+	friend ostream& operator<< (ostream&, const Order&);
 	friend ifstream& operator>> (ifstream&, Order&);
-	friend ofstream& operator<< (ofstream&, Order&);
+	friend ofstream& operator<< (ofstream&, const Order&);
 	void edit();
-	void make_deleted();
+    void make_deleted() {cost = -10;} //Inline
 };
 
 template <typename T>
-void scan(T&,const string&);
+void scan(T& a, const string& str) //We don't change this string, it should be a reference
+{
+    while (true)
+    {
+        cout << str;
+        cin >> a;
+        if (cin.fail() || a < 0) //TODO: FIX: what if type T is NOT NUMERIC?
+        {
+            cin.clear();
+            cin.ignore(32767, '\n');
+            system("cls"); //TODO: We shouldn't do output in the input functions
+        }
+        else
+            break;
+    }
+    cin.ignore(32767, '\n');
+}
+
+template <typename T>
+void save(const vector<T>& vec, const string& filename)
+{
+    ofstream fout;
+    fout.open(filename);
+    for (const T& i : vec)                                //for every reference to element i in vec
+        fout << i;
+    fout.close();
+}
 
 string enter_date();
 
@@ -75,17 +99,15 @@ string encryptDecrypt(const string&);
 
 bool clean_password(string&);
 
-bool password_size(string&);
-
 bool clean_login(string&);
 
-bool login_size(string&);
+bool check_size(const string&, size_t, size_t);
 
 void main_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void show_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
-void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
+void show_top_brigades(vector<Brigade>, vector<Order>&, vector<Admin>&);
 
 void show_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
@@ -103,14 +125,10 @@ void sign_up(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
-void sync(vector<Admin>&);
-
-void sync(vector<Brigade>&);
-
-void sync(vector<Order>&);
-
 bool save_brigade(Brigade&, vector<Order>&);
 
 bool save_order(Order&, vector<Brigade>&);
 
-void successfull();
+void fancyDots(unsigned);
+
+bool yesOrNo(const string& msg);
