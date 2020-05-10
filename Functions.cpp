@@ -106,6 +106,8 @@ ostream& operator<< (ostream& out, const Admin& a)
 
 ifstream& operator>> (ifstream& fin, Admin& a)
 {
+    if (fin.peek() == EOF)
+        return fin;
     getline(fin, a.login);
     getline(fin, a.password);
     a.login = encryptDecrypt(a.login);
