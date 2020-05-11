@@ -1,5 +1,5 @@
 #include "Classes.h"
-using namespace std; //Bad practice
+using namespace std;
 
 int main() try
 {
@@ -29,6 +29,8 @@ int main() try
 
 	main_menu(vecb, veco, veca);
 }
+
+
 catch (std::exception& e) //Catch any exception
 {
     cerr << "\nWarning! Something really bad occurred. Message:  \n" << e.what() << "\nThe program can't continue!\n"; //output WHAT it is

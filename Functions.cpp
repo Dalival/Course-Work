@@ -142,7 +142,7 @@ ostream& operator<< (ostream& out, const Brigade& b)
     cout << "Brigade " << b.name << endl;
     cout << b.people << " people" << endl;
     cout << "Active order: " << b.order << endl;
-    cout << b.completed << " completed orders";
+    cout << b.completed << " completed orders" << endl;
     return out;
 }
 

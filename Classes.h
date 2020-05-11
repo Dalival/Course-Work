@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <functional>
 #include <chrono>
+#include <Windows.h>
 
 using namespace std;
 
@@ -68,8 +69,7 @@ void scan(T& a, const string& str) //We don't change this string, it should be a
         cin >> a;
         if (cin.fail() || a < 0) //TODO: FIX: what if type T is NOT NUMERIC?
         {
-            cin.clear();
-            cin.ignore(32767, '\n');
+			flush_cin();
             system("cls"); //TODO: We shouldn't do output in the input functions
         }
         else
