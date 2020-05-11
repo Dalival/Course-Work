@@ -113,4 +113,3 @@ bool save_brigade(Brigade&, vector<Order>&);
 
 bool save_order(Order&, vector<Brigade>&);
 
-void successfull();
