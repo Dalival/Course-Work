@@ -1,5 +1,4 @@
 #include "Classes.h"
-#define MS_DELAY 400
 
 //////////////////// UTILITY ////////////////////
 
@@ -27,7 +26,7 @@ void flushCin()
     cin.ignore(32767, '\n');
 }
 
-void fancyDots(unsigned delay = MS_DELAY)
+void fancyDots(unsigned delay = 400)
 {
     Sleep(delay);
     cout << ". ";
@@ -340,7 +339,7 @@ string enter_date() //TODO: Functions must not be long (>50 lines)
     int current_y = stoi(str_current_y);
     int current_m = -1;
 
-    if (str_current_m == "Jan") //TODO: Horrible code, switch
+    if (str_current_m == "Jan") //TODO: bad style, switch
         current_m = 1;
     if (str_current_m == "Feb")
         current_m = 2;
@@ -418,7 +417,7 @@ string enter_date() //TODO: Functions must not be long (>50 lines)
         break;
     }
 
-    while (true) //TODO: Horrible code, use switch
+    while (true) //TODO: bad style, use switch
     {
         cout << "Enter the day: ";
         cin >> day;
