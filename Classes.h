@@ -8,6 +8,7 @@
 #include <synchapi.h>
 #include <algorithm>
 #include <functional>
+#include <chrono>
 
 using namespace std;
 
@@ -129,6 +130,6 @@ bool save_brigade(Brigade&, vector<Order>&);
 
 bool save_order(Order&, vector<Brigade>&);
 
-void fancyDots(unsigned);
+void fancy_dots(unsigned);
 
-bool yesOrNo(const string& msg);
+bool yes_or_no(const string& msg);

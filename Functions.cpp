@@ -2,7 +2,7 @@
 
 //////////////////// UTILITY ////////////////////
 
-bool yesOrNo(const string& msg)
+bool yes_or_no(const string& msg)
 {
     do
     {
@@ -20,13 +20,13 @@ bool yesOrNo(const string& msg)
     } while (true);
 }
 
-void flushCin()
+void flush_cin()
 {
     cin.clear();
     cin.ignore(32767, '\n');
 }
 
-void fancyDots(unsigned delay = 400)
+void fancy_dots(unsigned delay = 400)
 {
     Sleep(delay);
     cout << ". ";
@@ -36,7 +36,6 @@ void fancyDots(unsigned delay = 400)
     cout << ". ";
     Sleep(delay);
 }
-
 
 //////////////////// ADMIN'S METHODS ////////////////////
 
@@ -93,7 +92,7 @@ istream& operator>> (istream& in, Admin& a)
     system("cls");
     cout << "\nAdministrator " << a.login << " was registrated!";
     cout << "Success!" << endl;
-    fancyDots();
+    fancy_dots();
     return in;
 }
 
@@ -134,7 +133,7 @@ istream& operator>> (istream& in, Brigade& b)
     scan(b.people, "Enter how many people does brigade include: ");
 	cout << "\nBrigade " << b.name << " was registrated!";
     cout << "Success!" << endl;
-    fancyDots();
+    fancy_dots();
     return in;
 }
 
@@ -199,7 +198,7 @@ void Brigade::edit()
                 continue;
 		}
         //TODO: Test
-		if (!yesOrNo("Do you want to edit something else?")) return;
+		if (!yes_or_no("Do you want to edit something else?")) return;
 		//If the user said NO it will be inverted to true and we'll exit
 	}
 }
@@ -230,7 +229,7 @@ istream& operator>> (istream& in, Order& o)
 	cout << "Let's set a deadline.\n";
     o.deadline = enter_date();
     cout << "Success!" << endl;
-    fancyDots();
+    fancy_dots();
 	return in;
 }
 
@@ -324,7 +323,7 @@ void Order::edit()
 		default:
 			continue;
 		}
-		if (!yesOrNo("Do you want to edit something else?")) return;
+		if (!yes_or_no("Do you want to edit something else?")) return;
 	}
 }
 
@@ -332,46 +331,10 @@ void Order::edit()
 
 string enter_date() //TODO: Functions must not be long (>50 lines)
 {
-    istringstream  ssin(__DATE__); //TODO: CRITICAL BUG: __DATE__  IS THE DATE OF THE !COMPILATION! fix then uncomment
-    string str_current_m, str_current_d, str_current_y;
-
-    int current_d = stoi(str_current_d);
-    int current_y = stoi(str_current_y);
-    int current_m = -1;
-
-    if (str_current_m == "Jan") //TODO: bad style, switch
-        current_m = 1;
-    if (str_current_m == "Feb")
-        current_m = 2;
-    if (str_current_m == "Mar")
-        current_m = 3;
-    if (str_current_m == "Apr")
-        current_m = 4;
-    if (str_current_m == "May")
-        current_m = 5;
-    if (str_current_m == "Jun")
-        current_m = 6;
-    if (str_current_m == "Jul")
-        current_m = 7;
-    if (str_current_m == "Aug")
-        current_m = 8;
-    if (str_current_m == "Sep")
-        current_m = 9;
-    if (str_current_m == "Oct")
-        current_m = 10;
-    if (str_current_m == "Nov")
-        current_m = 11;
-    if (str_current_m == "Dec")
-        current_m = 12;
-    if (current_m == -1)
-    {
-        cout << "\n     Critical ERROR. I can't understand what month is now! Exiting...";
-        Sleep(3500);
-        exit(EXIT_FAILURE);
-    }
-
-    int year, month, day;
-
+    time_t t = time(nullptr); //get the amount of seconds since year 1970
+    tm* cur_date = localtime(&t); //conver it to a proper format using library <chrono>
+    unsigned current_y = cur_date->tm_year, current_m = cur_date->tm_mon, current_d = cur_date->tm_mday; //assign it to values
+    unsigned year = 0, month = 0, day = 0;
     while (true)
     {
         cout << "\nEnter the year: ";
@@ -379,7 +342,7 @@ string enter_date() //TODO: Functions must not be long (>50 lines)
         if (cin.fail())
         {
             system("cls");
-            flushCin();
+            flush_cin();
             continue;
         }
         if (year < current_y)
@@ -398,7 +361,7 @@ string enter_date() //TODO: Functions must not be long (>50 lines)
         if (cin.fail())
         {
             system("cls");
-            flushCin();
+            flush_cin();
             cout << "The entered year: " << year << endl;
             continue;
         }
@@ -424,7 +387,7 @@ string enter_date() //TODO: Functions must not be long (>50 lines)
         if (cin.fail())
         {
             system("cls");
-            flushCin();
+            flush_cin();
             cout << "The entered year: " << year << "\nThe entered month: " << month << endl;
             continue;
         }
@@ -482,7 +445,7 @@ string enter_date() //TODO: Functions must not be long (>50 lines)
         ssout << month << '.' << year;
 
     string date = ssout.str();
-    cin.ignore(32767, '\n');
+    flush_cin();
     return date;
 }
 
@@ -614,7 +577,7 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 			break;
 		case '4':
 			cout << "Exitting ";
-			fancyDots();
+                fancy_dots();
 			exit(0); //TODO: NEVER USE EXIT()!
 		default:
 			continue;
@@ -718,7 +681,7 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
                     if (logpass == veca[i].password)
                     {
                         cout << "Success!" << endl;
-                        fancyDots();
+                        fancy_dots();
                         admin_menu(vecb, veco, veca, i);
                     }
                     else
@@ -761,7 +724,7 @@ void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca,
 			break;
 		case '5':
 			cout << "Exitting ";
-			fancyDots();
+                fancy_dots();
 			exit(0); //TODO: Never use exit()
 		}
 	}
@@ -908,7 +871,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                                 }
                             }
                             cout << "Success!" << endl;
-                            fancyDots();
+                            fancy_dots();
 							manage_orders(vecb, veco, veca, i);
 						}
 					}
@@ -1016,7 +979,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
                     {
                         veca[i].login = input;
                         cout << "Success!" << endl;
-                        fancyDots();
+                        fancy_dots();
                         save(veca, "administrators.txt");
                         break;
                     }
@@ -1041,7 +1004,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
 					{
 						veca[i].password = input;
                         cout << "Success!" << endl;
-                        fancyDots();
+                        fancy_dots();
                         save(veca, "administrators.txt");
 						break;
 					}
@@ -1067,7 +1030,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
                 {
                     veca[i].make_deleted();
                     cout << "\n\nDeleting ";
-                    fancyDots(600);
+                    fancy_dots(600);
                     delete_deleted(veca);
                     cout << "Successfully deleted.";
                     Sleep(600);
