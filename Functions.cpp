@@ -329,127 +329,103 @@ void Order::edit()
 
 //////////////////// OTHER ////////////////////
 
-string enter_date() //TODO: Functions must not be long (>50 lines)
+string enter_date()
 {
     time_t t = time(nullptr); //get the amount of seconds since year 1970
-    tm* cur_date = localtime(&t); //conver it to a proper format using library <chrono>
-    unsigned current_y = cur_date->tm_year, current_m = cur_date->tm_mon, current_d = cur_date->tm_mday; //assign it to values
+    tm* cur_date = localtime(&t); //convert it to a proper format using library <chrono>
+    unsigned current_y = cur_date->tm_year+1900, current_m = cur_date->tm_mon+1, current_d = cur_date->tm_mday; //assign it to values
     unsigned year = 0, month = 0, day = 0;
-    while (true)
+    bool go; //We go until finished
+    string date;
+    do //until the date is right, repeat
     {
-        cout << "\nEnter the year: ";
-        cin >> year;
-        if (cin.fail())
+        try //try to check date
         {
+            go = false; //Don't go for now
             system("cls");
-            flush_cin();
-            continue;
+            cout << "Enter the date in the format DD.MM.YYYY : ";
+            getline(cin, date);
+                string temp{date[0], date[1]}; //first two are day
+                day = stoi(temp); //ATTEMPT to convert the input into numbers
+                temp = {date[3], date[4]}; // month
+                month = stoi(temp);
+                temp = {date[6], date[7], date[8], date[9]}; //year
+                year = stoi(temp); //If stoi throws, we catch it later.
+                if (day == 0 //non-zero
+                    || month == 0
+                    || year == 0
+                    || month > 12
+                    || year > current_y + 20 //No more than 20 years to finish (change it for your needs)
+                    || year < current_y //shouldn't be in the past
+                    || (year == current_y && month < current_m) //if year is ok, check that month is not in the past
+                    || (year == current_y && month == current_m && day < current_d))  //if month and year are ok, check the day
+                {
+                    cout << "The date you entered is invalid\n";
+                    fancy_dots();
+                    go = true;
+                    continue; //continue to as the user for the date
+                }
+                switch (month) {
+                    case 1: //these statements fall through to next, and then again and so on
+                    case 3:
+                    case 5:
+                    case 7:
+                    case 8:
+                    case 10:
+                    case 12:
+                        if (day > 31) {
+                            cout << "More than 31 days\n";
+                            fancy_dots();
+                            go = true;
+                        }
+                        break;
+                    case 4:
+                    case 6:
+                    case 9:
+                    case 11:
+                        if (day > 30) {
+                            cout << "More than 30 days\n";
+                            fancy_dots();
+                            go = true;
+                        }
+                        break;
+                    case 2: //FEBRUARY
+                        if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+                        { //check for leap year
+                            if (day > 29)
+                            {
+                                cout << "More than 29 days\n";
+                                fancy_dots();
+                                go = true;
+                            }
+                        }
+                        else if (day > 28)
+                        { //Not a leap year
+                            cout << "More than 28 days\n";
+                            fancy_dots();
+                            go = true;
+                        }
+                        break;
+                    default:
+                        throw std::invalid_argument("Default case when parsing month"); //Should never happen if we checked right
+                }
         }
-        if (year < current_y)
-        {
-            system("cls");
-            cout << "Dedline can't be in the past. Try again." << endl;
-            continue;
-        }
-        break;
-    }
-
-    while (true)
-    {
-        cout << "Enter the month: ";
-        cin >> month;
-        if (cin.fail())
-        {
-            system("cls");
-            flush_cin();
-            cout << "The entered year: " << year << endl;
-            continue;
-        }
-        if (month < 1 || month > 12)
-        {
-            system("cls");
-            cout << "The entered year: " << year << "\n\nThere are only 12 months in the year." << endl;
-            continue;
-        }
-        if (year == current_y && month < current_m)
-        {
-            system("cls");
-            cout << "The entered year: " << year << "\n\nDedline can't be in the past. Try again." << endl;
-            continue;
-        }
-        break;
-    }
-
-    while (true) //TODO: bad style, use switch
-    {
-        cout << "Enter the day: ";
-        cin >> day;
-        if (cin.fail())
-        {
-            system("cls");
-            flush_cin();
-            cout << "The entered year: " << year << "\nThe entered month: " << month << endl;
-            continue;
-        }
-        if (day < 1 || day > 31)
-        {
-            system("cls");
-            cout << "The entered year: " << year << "\nThe entered month: " << month << "\n\nThe month can include maximum 31 days." << endl;
-            continue;
-        }
-        if (month == 4 || month == 6 || month == 9 || month == 11)
-        {
-            if (day > 30)
+            catch(...) //Catch everything (including stoi() errors)
             {
-                system("cls");
-                cout << "The entered year: " << year << "\nThe entered month: " << month << "\n\nApr, Jun, Sep, Nov include only 30 days." << endl;
-                continue;
+                cout << "You didn't enter a date. Try again.\n";
+                fancy_dots();
+                go = true;
+                continue; //Try again
             }
         }
-        if (month == 2 && year % 4 == 0)
-        {
-            if (day > 29)
-            {
-                system("cls");
-                cout << "The entered year: " << year << "\nThe entered month: " << month << "\n\nFeb include maximum 29 days." << endl;
-                continue;
-            }
-        }
-        if (month == 2 && year % 4 != 0)
-        {
-            if (day > 28)
-            {
-                system("cls");
-                cout << "The entered year: " << year << "\nThe entered month: " << month << "\n\nFeb of non-leap year include only 28 days." << endl;
-                continue;
-            }
-        }
-        if (year == current_y && month == current_m && day < current_d)
-        {
-            system("cls");
-            cout << "The entered year: " << year << "\nThe entered month: " << month << "\n\nDedline can't be in the past. Try again." << endl;
-            continue;
-        }
-        break;
-    }
-
-    stringstream ssout;
-
-    if (day < 10)
-        ssout << '0' << day << '.';
-    else
-        ssout << day << '.';
-    if (month < 10)
-        ssout << '0' << month << '.' << year;
-    else
-        ssout << month << '.' << year;
-
-    string date = ssout.str();
-    flush_cin();
+        while (go);
+    cout << "Success: ";
+    cout << day << "." << month << "." << year << '\n';
+    fancy_dots();
     return date;
 }
 
-void delete_deleted(vector<Brigade>& vec) //TODO: Horrible performance, refactor.
+void delete_deleted(vector<Brigade>& vec) //TODO: Bad performance, refactor.
 {
     vec.erase(remove_if(vec.begin(), vec.end(), [](const Brigade& br) { return br.people < 0; }), vec.end()); //Takes too long to do
     vec.shrink_to_fit(); //Completely redundant
@@ -680,7 +656,7 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
                         main_menu(vecb, veco, veca);
                     if (logpass == veca[i].password)
                     {
-                        cout << "Success!" << endl;
+                        cout << "Success!";
                         fancy_dots();
                         admin_menu(vecb, veco, veca, i);
                     }
@@ -695,7 +671,6 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
         }
         system("cls");
         cout << "Wrong login! Such administrator doesn't exist. Try again.\n";
-        break; //TODO: There was an endless loop. Is that intended?
     }
 }
 
@@ -803,7 +778,6 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
             case '5':
                 admin_menu(vecb, veco, veca, i);
             }
-            break; //TODO: There was an endless loop. Was that intended?
         }
     }
     else
@@ -827,7 +801,6 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
             case '2':
                 admin_menu(vecb, veco, veca, i);
             }
-        break; //TODO: Endless loop. Was that intended?
         }
     }
 }
@@ -870,7 +843,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                                     ++b.completed;
                                 }
                             }
-                            cout << "Success!" << endl;
+                            cout << "Success!";
                             fancy_dots();
 							manage_orders(vecb, veco, veca, i);
 						}
@@ -978,7 +951,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
                     if (clean_login(input))
                     {
                         veca[i].login = input;
-                        cout << "Success!" << endl;
+                        cout << "Success!";
                         fancy_dots();
                         save(veca, "administrators.txt");
                         break;
@@ -1003,7 +976,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
 					if (clean_password(input))
 					{
 						veca[i].password = input;
-                        cout << "Success!" << endl;
+                        cout << "Success!";
                         fancy_dots();
                         save(veca, "administrators.txt");
 						break;
