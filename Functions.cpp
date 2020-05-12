@@ -454,7 +454,7 @@ string encryptDecrypt(const string& toEncrypt) {
 bool clean_password(string& s)
 {
     for (const char& ch : s)
-        if (!isalnum(ch)) // if NOT alphanumeric or - or _ then return false
+        if (!isalnum(ch))
             return false;
     return true;
 }
@@ -492,7 +492,7 @@ bool save_brigade(Brigade& b, vector<Order>& veco)
 		{
 			if (o.id == stoi(b.order))
 			{
-				o.maintainer == b.name;
+				o.maintainer = b.name;
 				return true;
 			}
 		}
@@ -597,7 +597,7 @@ void show_top_brigades(vector<Brigade> vecb, vector<Order>& veco, vector<Admin>&
 {
     system("cls");
     sort(vecb.begin(), vecb.end(), [](const Brigade& a,const Brigade& b) { return a.completed > b.completed; });
-    for (unsigned int i = vecb.size() - 1; i > vecb.size() - 3; i--)
+    for (size_t i = vecb.size() - 1; i > vecb.size() - 3; i--)
         cout << vecb[i] << endl;
     cout << "\nPress any key to quit.";
     _getch();
@@ -611,7 +611,7 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
     {
         vector<Brigade> top = vecb;
         sort(top.begin(), top.end(), [](const Brigade& a, const Brigade& b) { return a.completed > b.completed; });
-        for (unsigned int i = size(top) - 1; i > size(top) - 3; i--)
+        for (size_t i = size(top) - 1; i > size(top) - 3; i--)
             cout << top[i] << endl;
     }
     else

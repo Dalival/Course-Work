@@ -36,6 +36,6 @@ int main() try
 
 catch (std::exception& e) //Catch any exception
 {
-    cerr << "\nWarning! Something really bad occurred. Message:  \n" << e.what() << "\nThe program can't continue!\n"; //output WHAT it is
+    cerr << "\nWarning! Something really bad occurred. Message:  \n" << e.what() << "\n\nThe program can't continue!\n"; //output WHAT it is
     return (EXIT_FAILURE); //EXIT
 }

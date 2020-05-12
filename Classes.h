@@ -1,15 +1,15 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <conio.h>
 #include <sstream>
-#include <synchapi.h>
 #include <algorithm>
 #include <functional>
 #include <chrono>
-#include <Windows.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -59,6 +59,8 @@ struct Order
 	void edit();
     void make_deleted() {cost = -10;} //Inline
 };
+
+void flush_cin();
 
 template <typename T>
 void scan(T& a, const string& str) //We don't change this string, it should be a reference
