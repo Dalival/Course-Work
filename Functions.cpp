@@ -345,6 +345,7 @@ string enter_date()
             system("cls");
             cout << "Enter the date in the format DD.MM.YYYY : ";
             getline(cin, date);
+            if (date.size() != 10) throw;
                 string temp{date[0], date[1]}; //first two are day
                 day = stoi(temp); //ATTEMPT to convert the input into numbers
                 temp = {date[3], date[4]}; // month
@@ -365,7 +366,8 @@ string enter_date()
                     go = true;
                     continue; //continue to as the user for the date
                 }
-                switch (month) {
+                switch (month)
+                {
                     case 1: //these statements fall through to next, and then again and so on
                     case 3:
                     case 5:
@@ -373,7 +375,8 @@ string enter_date()
                     case 8:
                     case 10:
                     case 12:
-                        if (day > 31) {
+                        if (day > 31)
+                        {
                             cout << "More than 31 days\n";
                             fancy_dots();
                             go = true;
@@ -383,7 +386,8 @@ string enter_date()
                     case 6:
                     case 9:
                     case 11:
-                        if (day > 30) {
+                        if (day > 30)
+                        {
                             cout << "More than 30 days\n";
                             fancy_dots();
                             go = true;
