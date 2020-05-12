@@ -13,8 +13,9 @@
 
 using namespace std;
 
-struct Admin
+class Admin
 {
+public:
 	string login = "admin";
 	string password = "password";
 
@@ -26,8 +27,9 @@ struct Admin
     //This function is IMPLICITLY inline (because it's inside a class code)
 };
 
-struct Brigade
+class Brigade
 {
+public:
 	string name = "no name";
 	int people = 0;
 	string order = "no active order";
@@ -41,8 +43,9 @@ struct Brigade
     void make_deleted() {people = -10;} //Inline
 };
 
-struct Order
+class Order
 {
+public:
 	int id = 1234;
 	string customer = "no customer";
 	string address = "no address";

@@ -11,9 +11,6 @@ int main() try
 	Brigade buffb;
 	Order buffo;
 
-	while (true)
-	    enter_date();
-
 	ifstream fin;
 	fin.open("administrators.txt");
 	while(fin >> buffa)

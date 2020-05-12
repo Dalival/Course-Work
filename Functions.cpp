@@ -131,8 +131,9 @@ istream& operator>> (istream& in, Brigade& b)
         getline(cin, b.name);
     } while (!clean_login(b.name));
     scan(b.people, "Enter how many people does brigade include: ");
-	cout << "\nBrigade " << b.name << " was registrated!";
-    cout << "Success!" << endl;
+
+	cout << "\nBrigade " << b.name << " was registrated!" << endl;
+    cout << "Success!";
     fancy_dots();
     return in;
 }
@@ -337,96 +338,95 @@ string enter_date()
     unsigned year = 0, month = 0, day = 0;
     bool go; //We go until finished
     string date;
-    do //until the date is right, repeat
-    {
-        try //try to check date
-        {
-            go = false; //Don't go for now
-            system("cls");
-            cout << "Enter the date in the format DD.MM.YYYY : ";
-            getline(cin, date);
-            if (date.size() != 10) throw;
-                string temp{date[0], date[1]}; //first two are day
-                day = stoi(temp); //ATTEMPT to convert the input into numbers
-                temp = {date[3], date[4]}; // month
-                month = stoi(temp);
-                temp = {date[6], date[7], date[8], date[9]}; //year
-                year = stoi(temp); //If stoi throws, we catch it later.
-                if (day == 0 //non-zero
-                    || month == 0
-                    || year == 0
-                    || month > 12
-                    || year > current_y + 20 //No more than 20 years to finish (change it for your needs)
-                    || year < current_y //shouldn't be in the past
-                    || (year == current_y && month < current_m) //if year is ok, check that month is not in the past
-                    || (year == current_y && month == current_m && day < current_d))  //if month and year are ok, check the day
-                {
-                    cout << "The date you entered is invalid\n";
-                    fancy_dots();
-                    go = true;
-                    continue; //continue to as the user for the date
-                }
-                switch (month)
-                {
-                    case 1: //these statements fall through to next, and then again and so on
-                    case 3:
-                    case 5:
-                    case 7:
-                    case 8:
-                    case 10:
-                    case 12:
-                        if (day > 31)
-                        {
-                            cout << "More than 31 days\n";
-                            fancy_dots();
-                            go = true;
-                        }
-                        break;
-                    case 4:
-                    case 6:
-                    case 9:
-                    case 11:
-                        if (day > 30)
-                        {
-                            cout << "More than 30 days\n";
-                            fancy_dots();
-                            go = true;
-                        }
-                        break;
-                    case 2: //FEBRUARY
-                        if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
-                        { //check for leap year
-                            if (day > 29)
-                            {
-                                cout << "More than 29 days\n";
-                                fancy_dots();
-                                go = true;
-                            }
-                        }
-                        else if (day > 28)
-                        { //Not a leap year
-                            cout << "More than 28 days\n";
-                            fancy_dots();
-                            go = true;
-                        }
-                        break;
-                    default:
-                        throw std::invalid_argument("Default case when parsing month"); //Should never happen if we checked right
-                }
-        }
-            catch(...) //Catch everything (including stoi() errors)
-            {
-                cout << "You didn't enter a date. Try again.\n";
-                fancy_dots();
-                go = true;
-                continue; //Try again
-            }
-        }
-        while (go);
-    cout << "Success: ";
-    cout << day << "." << month << "." << year << '\n';
-    fancy_dots();
-    return date;
+	do //until the date is right, repeat
+	{
+		try //try to check date
+		{
+			go = false; //Don't go for now
+			system("cls");
+			cout << "Enter the date in the format DD.MM.YYYY : ";
+			getline(cin, date);
+			if (date.size() != 10) throw std::invalid_argument("Default case when parsing month");
+			string temp{ date[0], date[1] }; //first two are day
+			day = stoi(temp); //ATTEMPT to convert the input into numbers
+			temp = { date[3], date[4] }; // month
+			month = stoi(temp);
+			temp = { date[6], date[7], date[8], date[9] }; //year
+			year = stoi(temp); //If stoi throws, we catch it later.
+			if (day == 0 //non-zero
+				|| month == 0
+				|| year == 0
+				|| month > 12
+				|| year > current_y + 50 //No more than 20 years to finish (change it for your needs)
+				|| year < current_y //shouldn't be in the past
+				|| (year == current_y && month < current_m) //if year is ok, check that month is not in the past
+				|| (year == current_y && month == current_m && day < current_d))  //if month and year are ok, check the day
+			{
+				cout << "The date you entered is invalid\n";
+				fancy_dots();
+				go = true;
+				continue; //continue to as the user for the date
+			}
+			switch (month)
+			{
+			case 1: //these statements fall through to next, and then again and so on
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				if (day > 31)
+				{
+					cout << "More than 31 days\n";
+					fancy_dots();
+					go = true;
+				}
+				break;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				if (day > 30)
+				{
+					cout << "More than 30 days\n";
+					fancy_dots();
+					go = true;
+				}
+				break;
+			case 2: //FEBRUARY
+				if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+				{ //check for leap year
+					if (day > 29)
+					{
+						cout << "More than 29 days\n";
+						fancy_dots();
+						go = true;
+					}
+				}
+				else if (day > 28)
+				{ //Not a leap year
+					cout << "More than 28 days\n";
+					fancy_dots();
+					go = true;
+				}
+				break;
+			default:
+				throw std::invalid_argument("Default case when parsing month"); //Should never happen if we checked right
+			}
+		}
+		catch (...) //Catch everything (including stoi() errors)
+		{
+			cout << "You didn't enter a date in the right format. Try again.\n";
+			fancy_dots();
+			go = true;
+			continue; //Try again
+		}
+	} while (go);
+	cout << "Success: ";
+	cout << day << "." << month << "." << year << '\n';
+	fancy_dots();
+	return date;
 }
 
 void delete_deleted(vector<Brigade>& vec) //TODO: Bad performance, refactor.
