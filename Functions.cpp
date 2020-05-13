@@ -39,6 +39,14 @@ void fancy_dots(unsigned delay = 400)
     Sleep(delay);
 }
 
+string encryptDecrypt(const string& toEncrypt) {
+    char key[3] = { 'F', 'E', 'A' }; // my initials
+    string output = toEncrypt;
+    for (unsigned int i = 0; i < toEncrypt.size(); i++)
+        output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))]; //TODO: Meaningless code
+    return output;
+}
+
 
 //////////////////// ADMIN'S METHODS ////////////////////
 
@@ -470,14 +478,6 @@ void delete_deleted(vector<Admin>& vec)
     vec.shrink_to_fit();
 }
 
-string encryptDecrypt(const string& toEncrypt) {
-    char key[3] = { 'F', 'E', 'A' }; // my initials
-    string output = toEncrypt;
-    for (unsigned int i = 0; i < toEncrypt.size(); i++)
-        output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))]; //TODO: Meaningless code
-    return output;
-}
-
 bool clean_password(string& s)
 {
     for (const char& ch : s)
@@ -762,7 +762,11 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
 		system("cls");
 		for (const auto& b : vecb) //for every reference to element i in vecb -> cout i
 			cout << b << endl;
-		cout << endl << "1 -> Show TOP-3 brigades\n" << "2 -> Add new brigade\n" << "3 -> Edit brigade\n" << "4 -> Delete brigade\n" << "5 -> Quit" << endl << endl;
+		cout << "\n1 -> Show TOP-3 brigades"
+		 	 << "2 -> Add new brigade\n"
+			 << "3 -> Edit brigade\n"
+			 << "4 -> Delete brigade\n"
+			 << "5 -> Quit\n" << endl;
 		string name;
         Brigade buffb;
         while (true)
@@ -777,6 +781,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                 cin >> buffb;
                 vecb.push_back(buffb);
                 save(vecb,"brigades.txt");
+                save(veco, "orders.txt");
                 break;
             case '3':
                 while (true)
@@ -892,6 +897,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                                     ++b.completed;
                                 }
                             }
+                            save(vecb, "brigades.txt");
                             cout << "Success!";
                             fancy_dots();
 							manage_orders(vecb, veco, veca, i);
@@ -905,7 +911,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                 sync(buffo, vecb);
 				veco.push_back(buffo);
                 save(veco, "orders.txt");
-                save(veco, "brigades.txt");
+                save(vecb, "brigades.txt");
                 break;
 			case '3':
 				while (true)
@@ -921,7 +927,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 							o.edit();
                             sync(o, vecb);
                             save(veco, "orders.txt");
-                            save(veco, "brigades.txt");
+                            save(vecb, "brigades.txt");
 							manage_orders(vecb, veco, veca, i);
 						}
 					}
@@ -968,7 +974,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                 system("cls");
                 cin >> buffo;
                 sync(buffo, vecb);
-                save(veco, "brigades.txt");
+                save(vecb, "brigades.txt");
                 veco.push_back(buffo);
                 save(veco, "orders.txt");
                 break;
@@ -985,7 +991,10 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
     while (true)
     {
         system("cls");
-        cout << "1 -> Change login\n" << "2 -> Change password\n" << "3 -> Delete this account (careful!)\n" << "4 -> Quit" << endl << endl;
+        cout << "1 -> Change login\n"
+             << "2 -> Change password\n"
+             << "3 -> Delete this account (careful!)\n"
+             << "4 -> Quit\n" << endl;
         switch (_getch())
         {
         case '1':
@@ -1054,15 +1063,15 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
                     cout << "\n\nDeleting ";
                     fancy_dots(600);
                     delete_deleted(veca);
-                    cout << "Successfully deleted.";
-                    Sleep(600);
+                    cout << "Successfully deleted ";
+                    fancy_dots();
                     save(veca, "administrators.txt");
                     main_menu(vecb, veco, veca);
                 }
                 else
                 {
-                    cout << "\n\nCanceled.";
-                    Sleep(600);
+                    cout << "\n\nCanceled ";
+                    fancy_dots();
                 }
             }
             break;
