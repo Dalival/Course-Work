@@ -1,6 +1,8 @@
 #include "Classes.h"
 
+
 //////////////////// UTILITY ////////////////////
+
 
 bool yes_or_no(const string& msg)
 {
@@ -37,7 +39,9 @@ void fancy_dots(unsigned delay = 400)
     Sleep(delay);
 }
 
+
 //////////////////// ADMIN'S METHODS ////////////////////
+
 
 istream& operator>> (istream& in, Admin& a)
 {
@@ -105,7 +109,10 @@ ostream& operator<< (ostream& out, const Admin& a)
 ifstream& operator>> (ifstream& fin, Admin& a)
 {
     if (fin.peek() == EOF)
-        return fin;
+	{
+		fin.ignore(32767, '\n'); //needed to avoid last element duplicating
+		return fin;
+	}
     getline(fin, a.login);
     getline(fin, a.password);
     a.login = encryptDecrypt(a.login);
@@ -120,7 +127,9 @@ ofstream& operator<< (ofstream& fout, const Admin& a)
     return fout;
 }
 
+
 //////////////////// BRIGADE'S METHODS ////////////////////
+
 
 istream& operator>> (istream& in, Brigade& b)
 {
@@ -142,7 +151,11 @@ ostream& operator<< (ostream& out, const Brigade& b)
 {
     cout << "Brigade " << b.name << endl;
     cout << b.people << " people" << endl;
-    cout << "Active order: " << b.order << endl;
+    cout << "Active order: ";
+    if (b.order == 0)
+        cout << "no active order" << endl;
+    else
+        cout << b.order;
     cout << b.completed << " completed orders" << endl;
     return out;
 }
@@ -150,12 +163,16 @@ ostream& operator<< (ostream& out, const Brigade& b)
 ifstream& operator>> (ifstream& fin, Brigade& b)
 {
     if (fin.peek() == EOF)
+    {
+        fin.ignore(32767, '\n'); //needed to avoid last element duplicating
         return fin;
+    }
     string temp;
     getline(fin, b.name);
     getline(fin, temp);
     b.people = stoi(temp);
-    getline(fin, b.order);
+    getline(fin, temp);
+    b.order = stoi(temp);
     getline(fin, temp);
     b.completed = stoi(temp);
     return fin;
@@ -191,8 +208,7 @@ void Brigade::edit()
                 break;
             case '3':
                 system("cls");
-                cout << "Enter ID of order: ";
-                getline(cin, order);
+                scan(order, "Enter ID of order: ");
                 cout << "Now brigade maintain the order " << order;
                 break;
             default:
@@ -204,7 +220,9 @@ void Brigade::edit()
 	}
 }
 
+
 //////////////////// ORDER'S METHODS ////////////////////
+
 
 istream& operator>> (istream& in, Order& o)
 {
@@ -249,7 +267,10 @@ ostream& operator<< (ostream& out, const Order& o)
 ifstream& operator>> (ifstream& fin, Order& o)
 {
     if (fin.peek() == EOF)
+    {
+        fin.ignore(32767, '\n'); //needed to avoid last element duplicating
         return fin;
+    }
     string temp;
     getline(fin, temp);
     o.id = stoi(temp);
@@ -328,7 +349,9 @@ void Order::edit()
 	}
 }
 
+
 //////////////////// OTHER ////////////////////
+
 
 string enter_date()
 {
@@ -476,13 +499,13 @@ bool clean_login(string& s)
     return true;
 }
 
-bool save_brigade(Brigade& b, vector<Order>& veco)
+bool sync(Brigade& b, vector<Order>& veco)
 {
 	if (b.people < 0)
 	{
 		for (auto& o : veco)
 		{
-			if (o.id == stoi(b.order))
+			if (o.id == b.order)
 			{
 				o.maintainer = "no maintainer";
 				return true;
@@ -494,7 +517,7 @@ bool save_brigade(Brigade& b, vector<Order>& veco)
 	{
 		for (auto& o : veco)
 		{
-			if (o.id == stoi(b.order))
+			if (o.id == b.order)
 			{
 				o.maintainer = b.name;
 				return true;
@@ -504,7 +527,7 @@ bool save_brigade(Brigade& b, vector<Order>& veco)
 	}
 }
 
-bool save_order(Order& o, vector<Brigade>& vecb)
+bool sync(Order& o, vector<Brigade>& vecb)
 {
 	if (o.cost < 0)
 	{
@@ -512,7 +535,7 @@ bool save_order(Order& o, vector<Brigade>& vecb)
         {
             if (b.name == o.maintainer)
             {
-                b.order = "no active order";
+                b.order = 0;
                 return true;
             }
         }
@@ -524,7 +547,7 @@ bool save_order(Order& o, vector<Brigade>& vecb)
 		{
 			if (b.name == o.maintainer)
 			{
-				b.order = to_string(o.id);
+				b.order = o.id;
 				return true;
 			}
 		}
@@ -532,7 +555,9 @@ bool save_order(Order& o, vector<Brigade>& vecb)
 	}
 }
 
+
 //////////////////// MENUS ////////////////////
+
 
 void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
@@ -597,26 +622,44 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
     }
 }
 
-void show_top_brigades(vector<Brigade> vecb, vector<Order>& veco, vector<Admin>& veca)
+void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
-    system("cls");
-    sort(vecb.begin(), vecb.end(), [](const Brigade& a,const Brigade& b) { return a.completed > b.completed; });
-    for (size_t i = vecb.size() - 1; i > vecb.size() - 3; i--)
-        cout << vecb[i] << endl;
-    cout << "\nPress any key to quit.";
-    _getch();
-    main_menu(vecb, veco, veca);
+	system("cls");
+	if (size(vecb) > 3)
+	{
+		vector<Brigade> top = vecb;
+		sort(top.begin(), top.end(), [](const Brigade& a, const Brigade& b) { return a.completed < b.completed; });
+		for (size_t i = 0; i < 3; i++)
+			cout << top[i] << endl;
+	}
+    else if (size(vecb) <= 3)
+    {
+        for (int i = 0; i < size(vecb); i++)
+            cout << vecb[i] << endl;
+    }
+    else
+	{
+		cout << "There are no registered brigades!";
+	}
+	cout << "\nPress any key to quit.";
+	_getch();
+	main_menu(vecb, veco, veca);
 }
 
 void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
 {
     system("cls");
-    if (size(vecb) > 0)
+    if (size(vecb) > 3)
     {
         vector<Brigade> top = vecb;
-        sort(top.begin(), top.end(), [](const Brigade& a, const Brigade& b) { return a.completed > b.completed; });
-        for (size_t i = size(top) - 1; i > size(top) - 3; i--)
+        sort(top.begin(), top.end(), [](const Brigade& a, const Brigade& b) { return a.completed < b.completed; });
+        for (size_t i = 0; i < 3; i++)
             cout << top[i] << endl;
+    }
+    else if (size(vecb) <= 3)
+    {
+        for (int i = 0; i < size(vecb); i++)
+            cout << vecb[i] << endl;
     }
     else
     {
@@ -632,8 +675,9 @@ void show_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca
     system("cls");
     for (const auto & i : veco) //for every reference to element i in veco -> cout i
         cout << i << endl;
-    if(veco.empty())
-        cout << "There are no registrated orders!\n" << "Press any key to quit.";
+    if (veco.empty())
+        cout << "There are no registrated orders!\n";
+    cout << "Press any key to quit.";
     _getch();
     main_menu(vecb, veco, veca);
 }
@@ -667,9 +711,9 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
                     else
                     {
                         system("cls");
-                        cout << "Wrong password! Try again." << endl << endl;
+                        cout << "Wrong password! Try again.\n\n";
+                        cout << "Login: " << veca[i].login << '\n';
                     }
-                    break;
                 }
             }
         }
@@ -678,7 +722,9 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
     }
 }
 
+
 //////////////////// ADMIN'S MENUS ////////////////////
+
 
 void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
 {
@@ -730,9 +776,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                 system("cls");
                 cin >> buffb;
                 vecb.push_back(buffb);
-                save_brigade(buffb, veco);
                 save(vecb,"brigades.txt");
-                save(veco,"orders.txt");
                 break;
             case '3':
                 while (true)
@@ -746,7 +790,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                         if (name == b.name)
                         {
                             b.edit();
-                            save_brigade(b, veco);
+                            sync(b, veco);
                             save(vecb,"brigades.txt");
                             save(veco,"orders.txt");
                             manage_brigades(vecb, veco, veca, i);
@@ -768,7 +812,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                         if (name == b.name)
                         {
                             b.make_deleted();
-                            save_brigade(b, veco);
+                            sync(b, veco);
                             save(veco, "orders.txt");
                             delete_deleted(vecb);
                             save(vecb,"brigades.txt");
@@ -782,6 +826,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
             case '5':
                 admin_menu(vecb, veco, veca, i);
             }
+            break;
         }
     }
     else
@@ -798,7 +843,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                 system("cls");
                 cin >> buffb;
                 vecb.push_back(buffb);
-                save_brigade(buffb, veco);
+                sync(buffb, veco);
                 save(vecb,"brigades.txt");
                 save(veco,"orders.txt");
                 break;
@@ -842,7 +887,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                             save(veco, "orders.txt");
                             for (auto& b : vecb)
                             {
-                                if (o.id == stoi(b.order))
+                                if (o.id == b.order)
                                 {
                                     ++b.completed;
                                 }
@@ -857,7 +902,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 			case '2':
 				system("cls");
 				cin >> buffo;
-                save_order(buffo, vecb);
+                sync(buffo, vecb);
 				veco.push_back(buffo);
                 save(veco, "orders.txt");
                 save(veco, "brigades.txt");
@@ -874,7 +919,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 						if (stoi(ID) == o.id)
 						{
 							o.edit();
-                            save_order(o, vecb);
+                            sync(o, vecb);
                             save(veco, "orders.txt");
                             save(veco, "brigades.txt");
 							manage_orders(vecb, veco, veca, i);
@@ -894,7 +939,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 						if (stoi(ID) == o.id)
 						{
 							o.make_deleted();
-                            save_order(o, vecb);
+                            sync(o, vecb);
                             save(vecb, "brigades.txt");
 							delete_deleted(veco);
                             save(veco, "orders.txt");
@@ -922,7 +967,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
             case '1':
                 system("cls");
                 cin >> buffo;
-                save_order(buffo, vecb);
+                sync(buffo, vecb);
                 save(veco, "brigades.txt");
                 veco.push_back(buffo);
                 save(veco, "orders.txt");

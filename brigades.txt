@@ -1,8 +1,20 @@
 Alpha
 12
-no active order
+0
 0
 Beta
 8
-no active order
+0
+0
+Bugorchik
+50
+0
+0
+Babaka
+3
+0
+0
+Gagushenka
+34
+0
 0

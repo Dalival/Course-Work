@@ -13,8 +13,8 @@ int main() try
 
 	ifstream fin;
 	fin.open("administrators.txt");
-	while(fin >> buffa)
-        veca.push_back(buffa);
+	while (fin >> buffa)
+		veca.push_back(buffa);
     fin.close();
 
 	fin.open("brigades.txt");
@@ -29,7 +29,6 @@ int main() try
 
 	main_menu(vecb, veco, veca);
 }
-
 
 catch (std::exception& e) //Catch any exception
 {

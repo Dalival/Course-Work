@@ -32,7 +32,7 @@ class Brigade
 public:
 	string name = "no name";
 	int people = 0;
-	string order = "no active order";
+	int order = 0;
 	int completed = 0;
 
 	friend istream& operator>> (istream&, Brigade&);
@@ -113,7 +113,7 @@ void main_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void show_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
-void show_top_brigades(vector<Brigade>, vector<Order>&, vector<Admin>&);
+void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void show_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
@@ -131,10 +131,10 @@ void sign_up(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
-bool save_brigade(Brigade&, vector<Order>&);
-
-bool save_order(Order&, vector<Brigade>&);
-
 void fancy_dots(unsigned);
 
 bool yes_or_no(const string& msg);
+
+bool sync(Brigade&, vector<Order>&);
+
+bool sync(Brigade&, vector<Order>&);
