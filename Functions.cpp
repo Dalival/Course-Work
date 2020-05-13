@@ -195,19 +195,40 @@ ofstream& operator<< (ofstream& fout, const Brigade& b)
     return fout;
 }
 
-void Brigade::edit()
+void Brigade::edit(vector<Brigade>& vecb, vector<Order>& veco)
 {
+    bool isExist;
 	while (true)
 	{
-        system("cls");
-		cout << "1 -> Edit name \n2 -> Edit number of people \n3 -> Change active order" << endl;
+		cout << "1 -> Edit name \n2 -> Edit number of people \n3 -> Change active order \n4 -> Quit" << endl;
 		switch (_getch())
 		{
             case '1':
                 system("cls");
-                cout << "Enter new name: ";
-                getline(cin, name);
-                cout << "New name: " << name;
+                while (true)
+                {
+                    bool duplicate = false;
+                    cout << "Enter new name: ";
+                    getline(cin, name);
+                    if (!clean_login(name))
+                    {
+                        cout << "Brigade name can include latin letters, numbers and symbols \"-\" and \"_\"." << endl;
+                        continue;
+                    }
+                    for (auto& b : vecb)
+                    {
+                        if (name == b.name)
+                        {
+                            cout << "Brigade with name " << name << " already exist." << endl;
+                            duplicate = true;
+                            break;
+                        }
+                    }
+                    if (duplicate)
+                        continue;
+                    cout << "New name: " << name;
+                    break;
+                }
                 break;
             case '2':
                 system("cls");
@@ -216,11 +237,27 @@ void Brigade::edit()
                 break;
             case '3':
                 system("cls");
+                show_orders(veco);
                 scan(order, "Enter ID of order: ");
+                isExist = false;
+                for (auto& o : veco)
+                {
+                    if (order == o.id)
+                    {
+                        o.maintainer = name;
+                        isExist = true;
+                        break;
+                    }
+                }
+                if (!isExist)
+                {
+                    cout << "Wrong ID.";
+                    continue;
+                }
                 cout << "Now brigade maintain the order " << order;
                 break;
-            default:
-                continue;
+            case '4':
+                return;
 		}
         //TODO: Test
 		if (!yes_or_no("Do you want to edit something else?")) return;
@@ -561,21 +598,30 @@ bool sync(Order& o, vector<Brigade>& vecb)
 
 void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
+    while(true)
+    {
 	system("cls");
-	cout << "MAIN MENU\n\n"
-	     << "1 -> Show the list of brigades\n"
-	     << "2 -> Show the list of orders\n"
-	     << "3 -> Sign in as an administrator\n"
-	     << "4 -> Exit\n" << endl;
-	while (true)
-	{
+    cout << "MAIN MENU\n\n"
+         << "1 -> Show the list of brigades\n"
+         << "2 -> Show the list of orders\n"
+         << "3 -> Sign in as an administrator\n"
+         << "4 -> Exit\n" << endl;
 		switch (_getch())
 		{
 		case '1':
-			show_brigades(vecb, veco, veca);
+			show_brigades(vecb);
+            cout << "\n1 -> Show TOP-3 brigades \n2 -> Quit";
+            switch (_getch())
+            {
+            case '1':
+                show_top_brigades(vecb, veco, veca);
+                break;
+            case '2':
+                continue;
+            }
 			break;
 		case '2':
-			show_orders(vecb, veco, veca);
+			show_orders(veco);
 			break;
 		case '3':
 			sign_in(vecb, veco, veca);
@@ -584,42 +630,18 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 			cout << "Exitting ";
                 fancy_dots();
 			exit(0); //TODO: NEVER USE EXIT()!
-		default:
-			continue;
 		}
-        break;
 	}
 }
 
-void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
+void show_brigades(vector<Brigade>& vecb)
 {
     system("cls");
-    if (!vecb.empty())
-    {
-        for (const auto & i : vecb) //for every reference to element i in vecb -> cout i
-            cout << i << endl;
-        cout << "\n1 -> Show TOP-3 brigades" << endl << "2 -> Quit";
-        while (true)
-        {
-            switch (_getch())
-            {
-            case '1':
-                show_top_brigades(vecb, veco, veca);
-                break;
-            case '2':
-                main_menu(vecb, veco, veca);
-            default:
-                continue;
-            }
-            break;
-        }
-    }
-    else
-    {
-        cout << "There are no registered brigades!\n" << "Press any key to quit.";
-        _getch();
-        main_menu(vecb, veco, veca);
-    }
+    for (const auto& i : vecb) //for every reference to element i in veco -> cout i
+        cout << i << endl;
+    if (vecb.empty())
+        cout << "There are no registrated brigades!\n";
+    return;
 }
 
 void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
@@ -670,16 +692,16 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
     admin_menu(vecb, veco, veca, i);
 }
 
-void show_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
+void show_orders(vector<Order>& veco)
 {
     system("cls");
-    for (const auto & i : veco) //for every reference to element i in veco -> cout i
+    for (const auto& i : veco) //for every reference to element i in veco -> cout i
         cout << i << endl;
     if (veco.empty())
         cout << "There are no registrated orders!\n";
     cout << "Press any key to quit.";
     _getch();
-    main_menu(vecb, veco, veca);
+    return;
 }
 
 void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
@@ -778,11 +800,27 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                 break;
             case '2':
                 system("cls");
-                cin >> buffb;
-                vecb.push_back(buffb);
-                save(vecb,"brigades.txt");
-                save(veco, "orders.txt");
-                break;
+                while (true)
+                {
+                    bool duplicate = false;
+                    cin >> buffb;
+                    for (auto& b : vecb)
+                    {
+                        if (b.name == buffb.name)
+                        {
+                            cout << "Brigade with name " << buffb.name << " already exist. Try again." << endl;
+                            duplicate = true;
+                            break;
+                        }
+                    }
+                    if (duplicate)
+                        break;
+                    vecb.push_back(buffb);
+                    sync(buffb, veco);
+                    save(vecb, "brigades.txt");
+                    save(veco, "orders.txt");
+                    break;
+                }
             case '3':
                 while (true)
                 {
@@ -794,7 +832,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                     {
                         if (name == b.name)
                         {
-                            b.edit();
+                            b.edit(vecb, veco);
                             sync(b, veco);
                             save(vecb,"brigades.txt");
                             save(veco,"orders.txt");

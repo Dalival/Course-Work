@@ -28,6 +28,7 @@ int main() try
 	fin.close();
 
 	main_menu(vecb, veco, veca);
+	return 0;
 }
 
 catch (std::exception& e) //Catch any exception

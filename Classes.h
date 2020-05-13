@@ -27,22 +27,6 @@ public:
     //This function is IMPLICITLY inline (because it's inside a class code)
 };
 
-class Brigade
-{
-public:
-	string name = "no name";
-	int people = 0;
-	int order = 0;
-	int completed = 0;
-
-	friend istream& operator>> (istream&, Brigade&);
-	friend ostream& operator<< (ostream&, const Brigade&);
-	friend ifstream& operator>> (ifstream&, Brigade&);
-	friend ofstream& operator<< (ofstream&, const Brigade&);
-	void edit();
-    void make_deleted() {people = -10;} //Inline
-};
-
 class Order
 {
 public:
@@ -60,8 +44,25 @@ public:
 	friend ifstream& operator>> (ifstream&, Order&);
 	friend ofstream& operator<< (ofstream&, const Order&);
 	void edit();
-    void make_deleted() {cost = -10;} //Inline
+	void make_deleted() { cost = -10; } //Inline
 };
+
+class Brigade
+{
+public:
+	string name = "no name";
+	int people = 0;
+	int order = 0;
+	int completed = 0;
+
+	friend istream& operator>> (istream&, Brigade&);
+	friend ostream& operator<< (ostream&, const Brigade&);
+	friend ifstream& operator>> (ifstream&, Brigade&);
+	friend ofstream& operator<< (ofstream&, const Brigade&);
+	void edit(vector<Brigade>&, vector<Order>&);
+    void make_deleted() {people = -10;} //Inline
+};
+
 
 void flush_cin();
 
@@ -111,11 +112,11 @@ bool check_size(const string&, size_t, size_t);
 
 void main_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
-void show_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
+void show_brigades(vector<Brigade>&);
 
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
-void show_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&);
+void show_orders(vector<Order>&);
 
 void sign_in(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
