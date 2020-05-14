@@ -58,49 +58,63 @@ istream& operator>> (istream& in, Admin& a)
     {
         cout << "Enter the login of new administrator: ";
         getline(cin, input);
-        if (check_size(input,3,30))
+        if (input == "quit" || input == "Quit")
         {
-            if (clean_login(input))
+            cout << "You can't use word \"quit\". It's reserved.\n";
+        }
+        else
+        {
+            if (check_size(input, 3, 30))
             {
-                a.login = input;
-                break;
+                if (clean_login(input))
+                {
+                    a.login = input;
+                    break;
+                }
+                else
+                {
+                    system("cls");
+                    cout << "Login can include latin letters, numbers and symbols \"-\" and \"_\". Try again.\n";
+                }
             }
             else
             {
                 system("cls");
-                cout << "Login can include latin letters, numbers and symbols \"-\" and \"_\". Try again.\n";
+                cout << "Login should include 3-30 symblos. Try again.\n";
             }
-        }
-        else
-        {
-            system("cls");
-            cout << "Login should include 3-30 symblos. Try again.\n";
         }
 	}
 
-	while (true)
-	{
-		cout << "Enter the password of new administrator: ";
-		getline(cin, input);
-		if (check_size(input,8,24))
-		{
-			if (clean_password(input))
-			{
-				a.password = input;
-				break;
-			}
+    while (true)
+    {
+        cout << "Enter the password of new administrator: ";
+        getline(cin, input);
+        if (input == "quit" || input == "Quit")
+        {
+            cout << "You can't use word \"quit\". It's reserved.\n";
+        }
+        else
+        {
+            if (check_size(input, 8, 24))
+            {
+                if (clean_password(input))
+                {
+                    a.password = input;
+                    break;
+                }
+                else
+                {
+                    system("cls");
+                    cout << "Password can include latin letters and numbers. Try again.\n";
+                }
+            }
             else
             {
                 system("cls");
-                cout << "Password can include latin letters and numbers. Try again.\n";
+                cout << "Password should include 8-24 symblos. Try again.\n";
             }
-		}
-        else
-        {
-            system("cls");
-            cout << "Password should include 8-24 symblos. Try again.\n";
         }
-	}
+    }
     return in;
 }
 
@@ -221,6 +235,11 @@ void Brigade::edit(vector<Brigade>& vecb, vector<Order>& veco)
                     }
                     if (it > 1)
                         continue;
+                    if (name == "quit" || name == "Quit")
+                    {
+                        cout << "You can't use word \"quit\". It's reserved. Press any key to try again." << endl;
+                        continue;
+                    }
                     cout << "New name: " << name;
                     break;
                 }
@@ -280,7 +299,6 @@ istream& operator>> (istream& in, Order& o)
     system("cls");
 
 	scan(o.cost, "Enter cost of the project in dollars: ");
-    cin.ignore(32767, '\n');
     system("cls");
 
 	cout << "Let's set a deadline.\n";
@@ -477,7 +495,7 @@ string enter_date()
 		catch (...) //Catch everything (including stoi() errors)
 		{
 			cout << "You didn't enter a date in the right format. Try again.\n";
-			fancy_dots();
+			fancy_dots(600);
 			go = true;
 			continue; //Try again
 		}
@@ -775,124 +793,136 @@ void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca,
 
 void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
 {
-	if (size(vecb) > 0)
-	{
-		system("cls");
-		string name;
-        Brigade buffb;
-        while (true)
+    while (true)
+    {
+        if (size(vecb) > 0)
         {
-            for (const auto& b : vecb) //for every reference to element i in vecb -> cout i
-                cout << b << endl;
-            cout << "\n1 -> Show TOP-3 brigades\n"
-                << "2 -> Add new brigade\n"
-                << "3 -> Edit brigade\n"
-                << "4 -> Delete brigade\n"
-                << "5 -> Quit\n" << endl;
-            switch (_getch())
+            system("cls");
+            string name;
+            Brigade buffb;
+            while (true)
             {
-            case '1':
-                show_top_brigades(vecb, veco, veca, i);
-                break;
-            case '2':
-                system("cls");
-                while (true)
+                for (const auto& b : vecb) //for every reference to element i in vecb -> cout i
+                    cout << b << endl;
+                cout << "\n1 -> Show TOP-3 brigades\n"
+                    << "2 -> Add new brigade\n"
+                    << "3 -> Edit brigade\n"
+                    << "4 -> Delete brigade\n"
+                    << "5 -> Quit\n" << endl;
+                switch (_getch())
                 {
-                    int it = 0;
-                    bool duplicate = false;
-                    cin >> buffb;
-                    for (auto& b : vecb)
+                case '1':
+                    show_top_brigades(vecb, veco, veca, i);
+                    break;
+                case '2':
+                    system("cls");
+                    while (true)
                     {
-                        if (b.name == buffb.name)
+                        bool duplicate = false;
+                        cin >> buffb;
+                        for (auto& b : vecb)
                         {
-                            cout << "\nBrigade with name " << buffb.name << " already exist. Try again";
-                            fancy_dots();
-                            duplicate = true;
-                            break;
+                            if (b.name == buffb.name)
+                            {
+                                cout << "\nBrigade with name " << buffb.name << " already exist. Press any key to try again." << endl;
+                                _getch();
+                                duplicate = true;
+                                break;
+                            }
                         }
+                        if (buffb.name == "quit" || buffb.name == "Quit")
+                        {
+                            cout << "You can't use word \"quit\". It's reserved. Press any key to try again." << endl;
+                            _getch();
+                            continue;
+                        }
+                        if (duplicate)
+                            continue;
+                        vecb.push_back(buffb);
+                        sync(buffb, veco);
+                        save(vecb, "brigades.txt");
+                        save(veco, "orders.txt");
+                        cout << "\nBrigade " << buffb.name << " was registrated!" << endl;
+                        cout << "Success!";
+                        fancy_dots();
+                        break;
                     }
-                    if (duplicate)
-                        continue;
+                    break;
+                case '3':
+                    while (true)
+                    {
+                        cout << "Enter the name of the brigade you want to edit: ";
+                        getline(cin, name);
+                        if (name == "quit" || name == "Quit") //TODO: Make a lowercase function
+                            manage_brigades(vecb, veco, veca, i);
+                        for (auto& b : vecb)
+                        {
+                            if (name == b.name)
+                            {
+                                b.edit(vecb, veco);
+                                sync(b, veco);
+                                save(vecb, "brigades.txt");
+                                save(veco, "orders.txt");
+                                manage_brigades(vecb, veco, veca, i);
+                            }
+                        }
+                        cout << "Brigade with such name doesn't exist! Try again or write \"quit\" to quit.\n";
+                    }
+                    break;
+                case '4':
+                    while (true)
+                    {
+                        cout << "Enter the name of the brigade you want to delete: ";
+                        getline(cin, name);
+                        if (name == "quit" || name == "Quit")
+                            manage_brigades(vecb, veco, veca, i);
+                        for (auto& b : vecb) //TODO: Bad code
+                        {
+                            if (name == b.name)
+                            {
+                                b.make_deleted();
+                                sync(b, veco);
+                                save(veco, "orders.txt");
+                                delete_deleted(vecb);
+                                save(vecb, "brigades.txt");
+                                manage_brigades(vecb, veco, veca, i);
+                            }
+                        }
+                        cout << "Brigade with such name doesn't exist! ";
+                        fancy_dots(600);
+                        break; //TODO: There was an endless loop. Was that intended?
+                    }
+                    break;
+                case '5':
+                    admin_menu(vecb, veco, veca, i);
+                }
+                system("cls");
+            }
+        }
+        else
+        {
+            system("cls");
+            cout << "There are no registered brigades!\n" << "\n1 -> Add new brigade\n" << "2 -> Quit\n\n";
+            string name;
+            Brigade buffb;
+            while (true)
+            {
+                switch (_getch())
+                {
+                case '1':
+                    system("cls");
+                    cin >> buffb;
                     vecb.push_back(buffb);
                     sync(buffb, veco);
                     save(vecb, "brigades.txt");
                     save(veco, "orders.txt");
-                    cout << "\nBrigade " << buffb.name << " was registrated!" << endl;
-                    cout << "Success!";
-                    fancy_dots();
                     break;
+                case '2':
+                    admin_menu(vecb, veco, veca, i);
+                default:
+                    continue;
                 }
                 break;
-            case '3':
-                while (true)
-                {
-                    cout << "Enter the name of the brigade you want to edit: ";
-                    getline(cin, name);
-                    if (name == "quit" || name == "Quit") //TODO: Make a lowercase function
-                        manage_brigades(vecb, veco, veca, i);
-                    for (auto& b : vecb)
-                    {
-                        if (name == b.name)
-                        {
-                            b.edit(vecb, veco);
-                            sync(b, veco);
-                            save(vecb,"brigades.txt");
-                            save(veco,"orders.txt");
-                            manage_brigades(vecb, veco, veca, i);
-                        }
-                    }
-                    cout << "Brigade with such name doesn't exist! Try again or write \"quit\" to quit.\n";
-                }
-                break;
-            case '4':
-                while (true)
-                {
-                    cout << "Enter the name of the brigade you want to delete: ";
-                    getline(cin, name);
-                    if (name == "quit" || name == "Quit")
-                        manage_brigades(vecb, veco, veca, i);
-                    for (auto& b : vecb) //TODO: Bad code
-                    {
-                        if (name == b.name)
-                        {
-                            b.make_deleted();
-                            sync(b, veco);
-                            save(veco, "orders.txt");
-                            delete_deleted(vecb);
-                            save(vecb,"brigades.txt");
-                            manage_brigades(vecb, veco, veca, i);
-                        }
-                    }
-                    cout << "Brigade with such name doesn't exist! Try again or write \"quit\" to quit.\n";
-                    break; //TODO: There was an endless loop. Was that intended?
-                }
-                break;
-            case '5':
-                admin_menu(vecb, veco, veca, i);
-            }
-            system("cls");
-        }
-    }
-    else
-    {
-        system("cls");
-        cout << "There are no registered brigades!\n" << "\n1 -> Add new brigade\n" << "2 -> Quit\n\n";
-        string name;
-        Brigade buffb;
-        while (true)
-        {
-            switch (_getch())
-            {
-            case '1':
-                system("cls");
-                cin >> buffb;
-                vecb.push_back(buffb);
-                sync(buffb, veco);
-                save(vecb,"brigades.txt");
-                save(veco,"orders.txt");
-                break;
-            case '2':
-                admin_menu(vecb, veco, veca, i);
             }
         }
     }
