@@ -101,10 +101,6 @@ istream& operator>> (istream& in, Admin& a)
             cout << "Password should include 8-24 symblos. Try again.\n";
         }
 	}
-    system("cls");
-    cout << "\nAdministrator " << a.login << " was registrated!";
-    cout << "Success!" << endl;
-    fancy_dots();
     return in;
 }
 
@@ -148,10 +144,6 @@ istream& operator>> (istream& in, Brigade& b)
         getline(cin, b.name);
     } while (!clean_login(b.name));
     scan(b.people, "Enter how many people does brigade include: ");
-
-	cout << "\nBrigade " << b.name << " was registrated!" << endl;
-    cout << "Success!";
-    fancy_dots();
     return in;
 }
 
@@ -207,7 +199,7 @@ void Brigade::edit(vector<Brigade>& vecb, vector<Order>& veco)
                 system("cls");
                 while (true)
                 {
-                    bool duplicate = false;
+                    int it = 0;
                     cout << "Enter new name: ";
                     getline(cin, name);
                     if (!clean_login(name))
@@ -215,16 +207,19 @@ void Brigade::edit(vector<Brigade>& vecb, vector<Order>& veco)
                         cout << "Brigade name can include latin letters, numbers and symbols \"-\" and \"_\"." << endl;
                         continue;
                     }
-                    for (auto& b : vecb)
+                    for (auto& br : vecb)
                     {
-                        if (name == b.name)
+                        if (name == br.name)
                         {
-                            cout << "Brigade with name " << name << " already exist." << endl;
-                            duplicate = true;
-                            break;
+                            it++;
+                            if (it > 1)
+                            {
+                                cout << "Brigade with name " << name << " already exist." << endl;
+                                break;
+                            }
                         }
                     }
-                    if (duplicate)
+                    if (it > 1)
                         continue;
                     cout << "New name: " << name;
                     break;
@@ -272,8 +267,6 @@ void Brigade::edit(vector<Brigade>& vecb, vector<Order>& veco)
 istream& operator>> (istream& in, Order& o)
 {
 	string s;
-	scan(o.id, "Enter ID of the project: ");
-    system("cls");
 
 	cout << "Enter customer: ";
 	getline(cin, o.customer);
@@ -292,8 +285,6 @@ istream& operator>> (istream& in, Order& o)
 
 	cout << "Let's set a deadline.\n";
     o.deadline = enter_date();
-    cout << "Success!" << endl;
-    fancy_dots();
 	return in;
 }
 
@@ -350,7 +341,7 @@ void Order::edit()
 	while (true)
 	{
         system("cls");
-		cout << "1 -> Edit customer \n2 -> Edit address \n3 -> Edit area \n4 -> Edit cost \n5 -> Move deadline \n6 -> Change project maintainer" << endl << endl;
+		cout << "1 -> Edit customer \n2 -> Edit address \n3 -> Edit area \n4 -> Edit cost \n5 -> Move deadline \n6 -> Change project maintainer \n7 -> Quit" << endl << endl;
 		switch (_getch())
 		{
 		case '1':
@@ -387,8 +378,8 @@ void Order::edit()
 			getline(cin, maintainer);
 			cout << "New maintainer: " << maintainer;
 			break;
-		default:
-			continue;
+        case '7': 
+            return;
 		}
 		if (!yes_or_no("Do you want to edit something else?")) return;
 	}
@@ -480,7 +471,7 @@ string enter_date()
 				}
 				break;
 			default:
-				throw std::invalid_argument("Default case when parsing month"); //Should never happen if we checked right
+				throw invalid_argument("Default case when parsing month"); //Should never happen if we checked right
 			}
 		}
 		catch (...) //Catch everything (including stoi() errors)
@@ -609,17 +600,8 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 		switch (_getch())
 		{
 		case '1':
-			show_brigades(vecb);
-            cout << "\n1 -> Show TOP-3 brigades \n2 -> Quit";
-            switch (_getch())
-            {
-            case '1':
-                show_top_brigades(vecb, veco, veca);
-                break;
-            case '2':
-                continue;
-            }
-			break;
+			show_brigades(vecb, veco, veca);
+            break;
 		case '2':
 			show_orders(veco);
 			break;
@@ -634,14 +616,29 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 	}
 }
 
-void show_brigades(vector<Brigade>& vecb)
+void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 {
-    system("cls");
-    for (const auto& i : vecb) //for every reference to element i in veco -> cout i
-        cout << i << endl;
-    if (vecb.empty())
-        cout << "There are no registrated brigades!\n";
-    return;
+	system("cls");
+	for (const auto& i : vecb) //for every reference to element i in veco -> cout i
+		cout << i << endl;
+	if (vecb.empty())
+	{
+		cout << "There are no registered brigades! \nPress any key to quit.\n";
+		_getch();
+		return;
+	}
+	else
+	{
+		cout << "\n1 -> Show TOP-3 brigades \n2 -> Quit";
+		switch (_getch())
+		{
+		case '1':
+			show_top_brigades(vecb, veco, veca);
+			break;
+		case '2':
+			return;
+		}
+	}
 }
 
 void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
@@ -689,7 +686,6 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
     }
     cout << "\nPress any key to quit.";
     _getch();
-    admin_menu(vecb, veco, veca, i);
 }
 
 void show_orders(vector<Order>& veco)
@@ -726,7 +722,7 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
                         main_menu(vecb, veco, veca);
                     if (logpass == veca[i].password)
                     {
-                        cout << "Success!";
+                        cout << "\nSuccess!";
                         fancy_dots();
                         admin_menu(vecb, veco, veca, i);
                     }
@@ -782,17 +778,17 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
 	if (size(vecb) > 0)
 	{
 		system("cls");
-		for (const auto& b : vecb) //for every reference to element i in vecb -> cout i
-			cout << b << endl;
-		cout << "\n1 -> Show TOP-3 brigades"
-		 	 << "2 -> Add new brigade\n"
-			 << "3 -> Edit brigade\n"
-			 << "4 -> Delete brigade\n"
-			 << "5 -> Quit\n" << endl;
 		string name;
         Brigade buffb;
         while (true)
         {
+            for (const auto& b : vecb) //for every reference to element i in vecb -> cout i
+                cout << b << endl;
+            cout << "\n1 -> Show TOP-3 brigades\n"
+                << "2 -> Add new brigade\n"
+                << "3 -> Edit brigade\n"
+                << "4 -> Delete brigade\n"
+                << "5 -> Quit\n" << endl;
             switch (_getch())
             {
             case '1':
@@ -802,25 +798,31 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                 system("cls");
                 while (true)
                 {
+                    int it = 0;
                     bool duplicate = false;
                     cin >> buffb;
                     for (auto& b : vecb)
                     {
                         if (b.name == buffb.name)
                         {
-                            cout << "Brigade with name " << buffb.name << " already exist. Try again." << endl;
+                            cout << "\nBrigade with name " << buffb.name << " already exist. Try again";
+                            fancy_dots();
                             duplicate = true;
                             break;
                         }
                     }
                     if (duplicate)
-                        break;
+                        continue;
                     vecb.push_back(buffb);
                     sync(buffb, veco);
                     save(vecb, "brigades.txt");
                     save(veco, "orders.txt");
+                    cout << "\nBrigade " << buffb.name << " was registrated!" << endl;
+                    cout << "Success!";
+                    fancy_dots();
                     break;
                 }
+                break;
             case '3':
                 while (true)
                 {
@@ -840,7 +842,6 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                         }
                     }
                     cout << "Brigade with such name doesn't exist! Try again or write \"quit\" to quit.\n";
-                    break; //TODO: There was an endless loop. Was that intended?
                 }
                 break;
             case '4':
@@ -869,7 +870,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
             case '5':
                 admin_menu(vecb, veco, veca, i);
             }
-            break;
+            system("cls");
         }
     }
     else
@@ -901,18 +902,19 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 {
 	if (size(veco) > 0)
 	{
-		system("cls");
-		for (const auto& o : veco) //for every reference to element i in vecb -> cout i
-			cout << o << endl;
-		cout << "\n1 -> Mark order as completed\n"
-             << "2 -> Add new order\n"
-             << "3 -> Edit order\n"
-             << "4 -> Delete order\n"
-             << "5 -> Quit\n" << endl;
-		string ID;
-		Order buffo;
 		while (true)
 		{
+			system("cls");
+			for (const auto& o : veco) //for every reference to element i in vecb -> cout i
+				cout << o << endl;
+			cout << "\n1 -> Mark order as completed\n"
+				<< "2 -> Add new order\n"
+				<< "3 -> Edit order\n"
+				<< "4 -> Delete order\n"
+				<< "5 -> Quit\n" << endl;
+			string ID;
+			Order buffo;
+			bool duplicate = true;
 			switch (_getch())
 			{
 			case '1':
@@ -927,17 +929,17 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 						if (stoi(ID) == o.id)
 						{
 							o.isCompleted = true;
-                            save(veco, "orders.txt");
-                            for (auto& b : vecb)
-                            {
-                                if (o.id == b.order)
-                                {
-                                    ++b.completed;
-                                }
-                            }
-                            save(vecb, "brigades.txt");
-                            cout << "Success!";
-                            fancy_dots();
+							save(veco, "orders.txt");
+							for (auto& b : vecb)
+							{
+								if (o.id == b.order)
+								{
+									++b.completed;
+								}
+							}
+							save(vecb, "brigades.txt");
+							cout << "Success!";
+							fancy_dots();
 							manage_orders(vecb, veco, veca, i);
 						}
 					}
@@ -946,11 +948,25 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 			case '2':
 				system("cls");
 				cin >> buffo;
-                sync(buffo, vecb);
+				while (duplicate)
+				{
+					duplicate = false;
+					if (!empty(veco))
+						buffo.id = veco[size(veco) - 1].id + 1;
+					for (auto& o : veco)
+					{
+						if (buffo.id == o.id)
+						{
+							duplicate = true;
+							break;
+						}
+					}
+				}
+				sync(buffo, vecb);
 				veco.push_back(buffo);
-                save(veco, "orders.txt");
-                save(vecb, "brigades.txt");
-                break;
+				save(veco, "orders.txt");
+				save(vecb, "brigades.txt");
+				break;
 			case '3':
 				while (true)
 				{
@@ -963,9 +979,9 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 						if (stoi(ID) == o.id)
 						{
 							o.edit();
-                            sync(o, vecb);
-                            save(veco, "orders.txt");
-                            save(vecb, "brigades.txt");
+							sync(o, vecb);
+							save(veco, "orders.txt");
+							save(vecb, "brigades.txt");
 							manage_orders(vecb, veco, veca, i);
 						}
 					}
@@ -983,10 +999,10 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 						if (stoi(ID) == o.id)
 						{
 							o.make_deleted();
-                            sync(o, vecb);
-                            save(vecb, "brigades.txt");
+							sync(o, vecb);
+							save(vecb, "brigades.txt");
 							delete_deleted(veco);
-                            save(veco, "orders.txt");
+							save(veco, "orders.txt");
 							manage_orders(vecb, veco, veca, i);
 						}
 					}
@@ -1093,15 +1109,15 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
             }
             else
             {
-                cout << "\nAre you sure to delete your account? It won't be possible to cancel! Enter \"DELETE\" to confirm or anything else to cancel.";
+                cout << "\nAre you sure to delete your account? It won't be possible to cancel! \nEnter \"DELETE\" to confirm or anything else to cancel." << endl;
                 getline(cin, input);
-                if (input == "DELETE")
+                if (input == "DELETE" || input == "delete" || input == "Delete")
                 {
                     veca[i].make_deleted();
                     cout << "\n\nDeleting ";
-                    fancy_dots(600);
+                    fancy_dots();
                     delete_deleted(veca);
-                    cout << "Successfully deleted ";
+                    cout << "\nSuccessfully deleted ";
                     fancy_dots();
                     save(veca, "administrators.txt");
                     main_menu(vecb, veco, veca);
@@ -1123,8 +1139,25 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
 void sign_up(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i) //TODO: Unused parameters!
 {
     Admin buffa;
+    bool duplicate = true;
     system("cls");
-    cin >> buffa;
+    while (duplicate)
+    {
+        duplicate = false;
+        cin >> buffa;
+        for (auto& a : veca)
+        {
+            if (buffa.login == a.login)
+            {
+                cout << "\nAdmin with name \"" << buffa.login << "\" is already exist. Choose another name." << endl;
+                duplicate = true;
+                break;
+            }
+        }
+    }
     veca.push_back(buffa);
     save(veca, "administrators.txt");
+    system("cls");
+    cout << "Administrator " << buffa.login << " was successfully registered ";
+    fancy_dots();
 }

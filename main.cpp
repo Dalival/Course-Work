@@ -15,6 +15,11 @@ int main() try
 	fin.open("administrators.txt");
 	while (fin >> buffa)
 		veca.push_back(buffa);
+	if (empty(veca))
+	{
+		Admin standart;
+		veca.push_back(standart);
+	}
     fin.close();
 
 	fin.open("brigades.txt");

@@ -112,7 +112,7 @@ bool check_size(const string&, size_t, size_t);
 
 void main_menu(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
-void show_brigades(vector<Brigade>&);
+void show_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&);
 
