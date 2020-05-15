@@ -4,7 +4,7 @@
 //////////////////// UTILITY ////////////////////
 
 
-bool yes_or_no(const string& msg)
+bool yes_or_no(const string& msg) //do you want to... y/n
 {
     do
     {
@@ -28,7 +28,7 @@ void flush_cin()
     cin.ignore(32767, '\n');
 }
 
-void fancy_dots(unsigned delay = 400)
+void fancy_dots(unsigned delay = 400) //to give time to read for user
 {
     Sleep(delay);
     cout << ". ";
@@ -39,11 +39,12 @@ void fancy_dots(unsigned delay = 400)
     Sleep(delay);
 }
 
-string encryptDecrypt(const string& toEncrypt) {
-    char key[3] = { 'F', 'E', 'A' }; // my initials
+string encryptDecrypt(const string& toEncrypt) //for admin's data
+{
+    char key[3] = { 'F', 'E', 'A' }; // my initialsFedorenko Egor Alekseevich
     string output = toEncrypt;
     for (unsigned int i = 0; i < toEncrypt.size(); i++)
-        output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))]; //TODO: Meaningless code
+        output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))];
     return output;
 }
 
@@ -203,7 +204,6 @@ ofstream& operator<< (ofstream& fout, const Brigade& b)
 
 void Brigade::edit(vector<Brigade>& vecb)
 {
-    bool isExist;
 	while (true)
 	{
 		cout << "1 -> Edit name \n2 -> Edit number of people \n3 -> Quit" << endl;
@@ -221,7 +221,7 @@ void Brigade::edit(vector<Brigade>& vecb)
                         cout << "Brigade name can include latin letters, numbers and symbols \"-\" and \"_\"." << endl;
                         continue;
                     }
-                    for (auto& br : vecb)
+                    for (auto& br : vecb) //to avoid the same names of brigades
                     {
                         if (name == br.name)
                         {
@@ -235,7 +235,7 @@ void Brigade::edit(vector<Brigade>& vecb)
                     }
                     if (it > 1)
                         continue;
-                    if (name == "quit" || name == "Quit")
+                    if (name == "quit" || name == "Quit") //possibility to go back
                     {
                         cout << "You can't use word \"quit\". It's reserved. Press any key to try again." << endl;
                         continue;
@@ -252,9 +252,7 @@ void Brigade::edit(vector<Brigade>& vecb)
             case '3':
                 return;
 		}
-        //TODO: Test
 		if (!yes_or_no("Do you want to edit something else?")) return;
-		//If the user said NO it will be inverted to true and we'll exit
 	}
 }
 
@@ -420,10 +418,10 @@ void Order::edit(vector<Brigade>& vecb, vector<Order>& veco)
 string enter_date()
 {
     time_t t = time(nullptr); //get the amount of seconds since year 1970
-    tm* cur_date = localtime(&t); //convert it to a proper format using library <chrono>
+    tm* cur_date = localtime(&t); //convert it to a proper format
     unsigned current_y = cur_date->tm_year+1900, current_m = cur_date->tm_mon+1, current_d = cur_date->tm_mday; //assign it to values
     unsigned year = 0, month = 0, day = 0;
-    bool go; //We go until finished
+    bool go; //we go until finished
     string date;
 	do //until the date is right, repeat
 	{
@@ -516,19 +514,19 @@ string enter_date()
 	return date;
 }
 
-void delete_deleted(vector<Brigade>& vec) //TODO: Bad performance, refactor.
+void delete_deleted(vector<Brigade>& vec) //remove from vector brigades that was marked as deleted
 {
-    vec.erase(remove_if(vec.begin(), vec.end(), [](const Brigade& br) { return br.people < 0; }), vec.end()); //Takes too long to do
-    vec.shrink_to_fit(); //Completely redundant
+    vec.erase(remove_if(vec.begin(), vec.end(), [](const Brigade& br) { return br.people < 0; }), vec.end()); //the best sort I've found
+    vec.shrink_to_fit(); //why not
 }
 
-void delete_deleted(vector<Order>& vec)
+void delete_deleted(vector<Order>& vec) //remove from vector orders that was marked as deleted
 {
     vec.erase(remove_if(vec.begin(), vec.end(), [](const Order& ord) { return ord.cost < 0; }), vec.end());
     vec.shrink_to_fit();
 }
 
-void delete_deleted(vector<Admin>& vec)
+void delete_deleted(vector<Admin>& vec) //remove from vector admins that was marked as deleted
 {
     vec.erase(remove_if(vec.begin(), vec.end(), [](const Admin& adm) { return adm.login == "..."; }), vec.end());
     vec.shrink_to_fit();
@@ -537,25 +535,25 @@ void delete_deleted(vector<Admin>& vec)
 bool clean_password(string& s)
 {
     for (const char& ch : s)
-        if (!isalnum(ch))
+        if (!isalnum(ch)) //symbol is not a letter and is not a number
             return false;
     return true;
 }
 
 bool check_size(const string& s, size_t min, size_t max)
 {
-    return (s.size() >= min && s.size() <= max); //TODO: Merge functions?
+    return (s.size() >= min && s.size() <= max); //to avoid too long/short names/passwords
 }
 
 bool clean_login(string& s)
 {
-    for (const char& ch : s) //reference
+    for (const char& ch : s)
         if (!(isalnum(ch) || ch == '-' || ch == '_')) // if NOT alphanumeric or - or _ then return false
             return false;
     return true;
 }
 
-bool sync(Brigade& b, vector<Order>& veco)
+bool sync(Brigade& b, vector<Order>& veco) //if you change brigade the order that linked with it will be changed too
 {
 	if (b.people < 0)
 	{
@@ -583,7 +581,7 @@ bool sync(Brigade& b, vector<Order>& veco)
 	}
 }
 
-bool sync(Order& o, vector<Brigade>& vecb)
+bool sync(Order& o, vector<Brigade>& vecb) //if you change order the brigade that linked with it will be changed too
 {
 	if (o.cost < 0)
 	{
@@ -639,7 +637,7 @@ void main_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 		case '4':
 			cout << "Exitting ";
                 fancy_dots();
-			exit(0); //TODO: NEVER USE EXIT()!
+			exit(0); //end the program. I know I shouldn't use it but it's too hard to remake the core of the project
 		}
 	}
 }
@@ -669,22 +667,22 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 	}
 }
 
-void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
+void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca) //my task from curator
 {
 	system("cls");
 	if (size(vecb) > 3)
 	{
-		vector<Brigade> top = vecb;
+		vector<Brigade> top = vecb; //vector top is for sorting. I don't want to sort the original vector of brigades
 		sort(top.begin(), top.end(), [](const Brigade& a, const Brigade& b) { return a.completed < b.completed; });
 		for (size_t i = 0; i < 3; i++)
 			cout << top[i] << endl;
 	}
-    else if (size(vecb) <= 3)
+    else if (size(vecb) <= 3) //no sense to sort
     {
         for (int i = 0; i < size(vecb); i++)
             cout << vecb[i] << endl;
     }
-    else
+    else // nothing to sort
 	{
 		cout << "There are no registered brigades!";
 	}
@@ -693,7 +691,7 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
 	main_menu(vecb, veco, veca);
 }
 
-void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
+void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i) //yes, the same function but with possibility to call admin_menu function
 {
     system("cls");
     if (size(vecb) > 3)
@@ -728,7 +726,7 @@ void show_orders(vector<Order>& veco)
     return;
 }
 
-void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
+void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca) //sign in as an admin
 {
     string logpass;
     system("cls");
@@ -772,7 +770,7 @@ void sign_in(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca)
 //////////////////// ADMIN'S MENUS ////////////////////
 
 
-void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
+void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i) //maim menu but with more features included
 {
 	while (true)
 	{
@@ -791,17 +789,17 @@ void admin_menu(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca,
 			edit_account(vecb, veco, veca, i);
 			break;
 		case '4':
-			sign_up(vecb, veco, veca, i);
+			sign_up(veca);
 			break;
 		case '5':
 			cout << "Exitting ";
                 fancy_dots();
-			exit(0); //TODO: Never use exit()
+			exit(0);
 		}
 	}
 }
 
-void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
+void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i) //menu of brigades
 {
     while (true)
     {
@@ -822,7 +820,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                 switch (_getch())
                 {
                 case '1':
-                    show_top_brigades(vecb, veco, veca, i);
+                    show_top_brigades(vecb, veco, veca, i); //the version of function for admins (check passed  values)
                     break;
                 case '2':
                     system("cls");
@@ -849,9 +847,9 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                         if (duplicate)
                             continue;
                         vecb.push_back(buffb);
-                        sync(buffb, veco);
-                        save(vecb, "brigades.txt");
-                        save(veco, "orders.txt");
+                        sync(buffb, veco); //changed linked order
+                        save(vecb, "brigades.txt"); //save brigades in file
+                        save(veco, "orders.txt"); //save orders in file
                         cout << "\nBrigade " << buffb.name << " was registrated!" << endl;
                         cout << "Success!";
                         fancy_dots();
@@ -863,8 +861,8 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                     {
                         cout << "Enter the name of the brigade you want to edit: ";
                         getline(cin, name);
-                        if (name == "quit" || name == "Quit") //TODO: Make a lowercase function
-                            manage_brigades(vecb, veco, veca, i);
+                        if (name == "quit" || name == "Quit")
+                            manage_brigades(vecb, veco, veca, i); //back to main menu
                         for (auto& b : vecb)
                         {
                             if (name == b.name)
@@ -938,7 +936,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
     }
 }
 
-void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
+void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i) //menu of orders
 {
     while (true)
     {
@@ -962,7 +960,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                 case '1':
                     while (true)
                     {
-                        cout << "Completed orders are removed from the list. Enter the ID of order you want to mark as completed: ";
+                        cout << "Completed orders are removed from the list. Enter the ID of order you want to mark as completed: "; //yeah maybe I was shoud to create archive or smth
                         getline(cin, ID);
                         if (ID == "quit" || ID == "Quit")
                             manage_orders(vecb, veco, veca, i);
@@ -1053,7 +1051,7 @@ void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
                         cout << "Order with such ID doesn't exist! Try again or write \"quit\" to quit.\n";
                     }
                 case '5':
-                    admin_menu(vecb, veco, veca, i);
+                    admin_menu(vecb, veco, veca, i); //back to main menu
                 }
             }
         }
@@ -1157,7 +1155,7 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
             {
                 cout << "\nAre you sure to delete your account? It won't be possible to cancel! \nEnter \"DELETE\" to confirm or anything else to cancel." << endl;
                 getline(cin, input);
-                if (input == "DELETE" || input == "delete" || input == "Delete")
+                if (input == "DELETE" || input == "delete" || input == "Delete") //to make administrator sure that this is an important decision
                 {
                     veca[i].make_deleted();
                     cout << "\n\nDeleting ";
@@ -1182,12 +1180,12 @@ void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& vec
     }
 }
 
-void sign_up(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i) //TODO: Unused parameters!
+void sign_up(vector<Admin>& veca) //only admin can register a new admin
 {
     Admin buffa;
     bool duplicate = true;
     system("cls");
-    while (duplicate)
+    while (duplicate) //to avoid the same logins of different admins
     {
         duplicate = false;
         cin >> buffa;
@@ -1206,4 +1204,5 @@ void sign_up(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, in
     system("cls");
     cout << "Administrator " << buffa.login << " was successfully registered ";
     fancy_dots();
+    return;
 }

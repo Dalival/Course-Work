@@ -126,7 +126,7 @@ void manage_orders(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
 void edit_account(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 
-void sign_up(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
+void sign_up(vector<Admin>&);
 
 void show_top_brigades(vector<Brigade>&, vector<Order>&, vector<Admin>&, int&);
 

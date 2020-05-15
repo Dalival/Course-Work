@@ -3,36 +3,36 @@ using namespace std;
 
 int main() try
 {
-	vector<Admin> veca;
-	vector<Brigade> vecb;
-	vector<Order> veco;
+	vector<Admin> veca; //vector of administrators
+	vector<Brigade> vecb; //vector of brigades
+	vector<Order> veco; //vector of orders
 
-	Admin buffa;
-	Brigade buffb;
-	Order buffo;
+	Admin buffa; //buffer variable for administrator
+	Brigade buffb; //buffer variable for brigade
+	Order buffo; //buffer variable for order
 
 	ifstream fin;
-	fin.open("administrators.txt");
+	fin.open("administrators.txt"); //reading admins from file
 	while (fin >> buffa)
 		veca.push_back(buffa);
-	if (empty(veca))
+	if (empty(veca)) //create a standart admin when program run first time
 	{
 		Admin standart;
 		veca.push_back(standart);
 	}
     fin.close();
 
-	fin.open("brigades.txt");
+	fin.open("brigades.txt"); //reading brigades from file
 	while(fin >> buffb)
         vecb.push_back(buffb);
 	fin.close();
 
-	fin.open("orders.txt");
+	fin.open("orders.txt"); //reading orders from file
 	while(fin >> buffo)
         veco.push_back(buffo);
 	fin.close();
 
-	main_menu(vecb, veco, veca);
+	main_menu(vecb, veco, veca); //launching
 	return 0;
 }
 
