@@ -27,26 +27,6 @@ public:
     //This function is IMPLICITLY inline (because it's inside a class code)
 };
 
-class Order
-{
-public:
-	int id = 1234;
-	string customer = "no customer";
-	string address = "no address";
-	double area = 0;
-	double cost = 0;
-	string deadline = "no deadline";
-	string maintainer = "no maintainer";
-	bool isCompleted = false;
-
-	friend istream& operator>> (istream&, Order&);
-	friend ostream& operator<< (ostream&, const Order&);
-	friend ifstream& operator>> (ifstream&, Order&);
-	friend ofstream& operator<< (ofstream&, const Order&);
-	void edit();
-	void make_deleted() { cost = -10; } //Inline
-};
-
 class Brigade
 {
 public:
@@ -59,10 +39,28 @@ public:
 	friend ostream& operator<< (ostream&, const Brigade&);
 	friend ifstream& operator>> (ifstream&, Brigade&);
 	friend ofstream& operator<< (ofstream&, const Brigade&);
-	void edit(vector<Brigade>&, vector<Order>&);
+	void edit(vector<Brigade>&);
     void make_deleted() {people = -10;} //Inline
 };
 
+class Order
+{
+public:
+	int id = 1000;
+	string customer = "no customer";
+	string address = "no address";
+	double area = 0;
+	double cost = 0;
+	string deadline = "no deadline";
+	string maintainer = "no maintainer";
+
+	friend istream& operator>> (istream&, Order&);
+	friend ostream& operator<< (ostream&, const Order&);
+	friend ifstream& operator>> (ifstream&, Order&);
+	friend ofstream& operator<< (ofstream&, const Order&);
+	void edit(vector<Brigade>&, vector<Order>&);
+	void make_deleted() { cost = -10; } //Inline
+};
 
 void flush_cin();
 

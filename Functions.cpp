@@ -169,7 +169,7 @@ ostream& operator<< (ostream& out, const Brigade& b)
     if (b.order == 0)
         cout << "no active order" << endl;
     else
-        cout << b.order;
+        cout << b.order << endl;
     cout << b.completed << " completed orders" << endl;
     return out;
 }
@@ -201,12 +201,12 @@ ofstream& operator<< (ofstream& fout, const Brigade& b)
     return fout;
 }
 
-void Brigade::edit(vector<Brigade>& vecb, vector<Order>& veco)
+void Brigade::edit(vector<Brigade>& vecb)
 {
     bool isExist;
 	while (true)
 	{
-		cout << "1 -> Edit name \n2 -> Edit number of people \n3 -> Change active order \n4 -> Quit" << endl;
+		cout << "1 -> Edit name \n2 -> Edit number of people \n3 -> Quit" << endl;
 		switch (_getch())
 		{
             case '1':
@@ -250,27 +250,6 @@ void Brigade::edit(vector<Brigade>& vecb, vector<Order>& veco)
                 cout << "Now " << name << " has " << people << " people.";
                 break;
             case '3':
-                system("cls");
-                show_orders(veco);
-                scan(order, "Enter ID of order: ");
-                isExist = false;
-                for (auto& o : veco)
-                {
-                    if (order == o.id)
-                    {
-                        o.maintainer = name;
-                        isExist = true;
-                        break;
-                    }
-                }
-                if (!isExist)
-                {
-                    cout << "Wrong ID.";
-                    continue;
-                }
-                cout << "Now brigade maintain the order " << order;
-                break;
-            case '4':
                 return;
 		}
         //TODO: Test
@@ -301,7 +280,6 @@ istream& operator>> (istream& in, Order& o)
 	scan(o.cost, "Enter cost of the project in dollars: ");
     system("cls");
 
-	cout << "Let's set a deadline.\n";
     o.deadline = enter_date();
 	return in;
 }
@@ -336,8 +314,6 @@ ifstream& operator>> (ifstream& fin, Order& o)
     o.cost = stoi(temp);
     getline(fin, o.deadline);
     getline(fin, o.maintainer);
-    getline(fin, temp);
-    o.isCompleted = stoi(temp);
     return fin;
 }
 
@@ -350,53 +326,87 @@ ofstream& operator<< (ofstream& fout, const Order& o)
     fout << o.cost << endl;
     fout << o.deadline << endl;
     fout << o.maintainer << endl;
-    fout << o.isCompleted << endl;
     return fout;
 }
 
-void Order::edit()
+void Order::edit(vector<Brigade>& vecb, vector<Order>& veco)
 {
+    string old_maintainer = maintainer;
 	while (true)
 	{
+        bool isExist = false;
+        string temp;
         system("cls");
+        cout << *this << endl;
 		cout << "1 -> Edit customer \n2 -> Edit address \n3 -> Edit area \n4 -> Edit cost \n5 -> Move deadline \n6 -> Change project maintainer \n7 -> Quit" << endl << endl;
-		switch (_getch())
-		{
-		case '1':
+        switch (_getch())
+        {
+        case '1':
             system("cls");
-			cout << "Enter new customer: ";
-			getline(cin, customer);
-			cout << "New customer: " << customer;
-			break;
-		case '2':
+            cout << "Enter new customer: ";
+            getline(cin, customer);
+            cout << "New customer: " << customer;
+            break;
+        case '2':
             system("cls");
-			cout << "Enter new address: ";
-			getline(cin, address);
-			cout << "New address: " << address;
-			break;
-		case '3':
+            cout << "Enter new address: ";
+            getline(cin, address);
+            cout << "New address: " << address;
+            break;
+        case '3':
             system("cls");
-			scan(area, "Enter new area: ");
-			cout << "New area: " << area;
-			break;
-		case '4':
+            scan(area, "Enter new area: ");
+            cout << "New area: " << area;
+            break;
+        case '4':
             system("cls");
-			scan(cost, "Enter new cost: ");
-			cout << "New cost: " << cost;
-			break;
-		case '5':
+            scan(cost, "Enter new cost: ");
+            cout << "New cost: " << cost;
+            break;
+        case '5':
             system("cls");
-			cout << "Let's set new deadline.\n";
+            cout << "Let's set new deadline.\n";
             deadline = enter_date();
-            cout << "\nNew deadline: " << deadline;
-			break;
-		case '6':
+            break;
+        case '6':
             system("cls");
-			cout << "Enter new maintaining brigade: ";
-			getline(cin, maintainer);
+            for (const auto& i : vecb) //for every reference to element i in veco -> cout i
+                cout << i << endl;
+            cout << "Enter new maintaining brigade: ";
+            getline(cin, temp);
+            if (temp == "quit" || temp == "Quit")
+                continue;
+            for (auto& b : vecb)
+            {
+                if (b.name == temp)
+                {
+                    isExist = true;
+                    for (auto& o : veco) // clean the maintainer-fill of order that was maintained by new brigade.
+                    {
+                        if (o.maintainer == temp)
+                        {
+                            o.maintainer = "no maintainer";
+                            break;
+                        }
+                    }
+                    b.order = id;
+                    sync(b, veco);
+                    break;
+                }
+			}
+			if (!isExist)
+			{
+				cout << "There is no brigades with such name!.";
+				continue;
+			}
+            for (auto& b : vecb) // clean the order fill of old brigade-maintainer
+            {
+                if (b.name == old_maintainer)
+                    b.order = 0;
+            }
 			cout << "New maintainer: " << maintainer;
 			break;
-        case '7': 
+		case '7':
             return;
 		}
 		if (!yes_or_no("Do you want to edit something else?")) return;
@@ -421,7 +431,7 @@ string enter_date()
 		{
 			go = false; //Don't go for now
 			system("cls");
-			cout << "Enter the date in the format DD.MM.YYYY : ";
+			cout << "Enter the deadline in the format DD.MM.YYYY : ";
 			getline(cin, date);
 			if (date.size() != 10) throw std::invalid_argument("Default case when parsing month");
 			string temp{ date[0], date[1] }; //first two are day
@@ -859,7 +869,7 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
                         {
                             if (name == b.name)
                             {
-                                b.edit(vecb, veco);
+                                b.edit(vecb);
                                 sync(b, veco);
                                 save(vecb, "brigades.txt");
                                 save(veco, "orders.txt");
@@ -930,143 +940,149 @@ void manage_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& 
 
 void manage_orders(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
 {
-	if (size(veco) > 0)
-	{
-		while (true)
-		{
-			system("cls");
-			for (const auto& o : veco) //for every reference to element i in vecb -> cout i
-				cout << o << endl;
-			cout << "\n1 -> Mark order as completed\n"
-				<< "2 -> Add new order\n"
-				<< "3 -> Edit order\n"
-				<< "4 -> Delete order\n"
-				<< "5 -> Quit\n" << endl;
-			string ID;
-			Order buffo;
-			bool duplicate = true;
-			switch (_getch())
-			{
-			case '1':
-				while (true)
-				{
-					cout << "Enter ID of order you want to mark as completed: ";
-					getline(cin, ID);
-					if (ID == "quit" || ID == "Quit")
-						manage_orders(vecb, veco, veca, i);
-					for (auto& o : veco)
-					{
-						if (stoi(ID) == o.id)
-						{
-							o.isCompleted = true;
-							save(veco, "orders.txt");
-							for (auto& b : vecb)
-							{
-								if (o.id == b.order)
-								{
-									++b.completed;
-								}
-							}
-							save(vecb, "brigades.txt");
-							cout << "Success!";
-							fancy_dots();
-							manage_orders(vecb, veco, veca, i);
-						}
-					}
-					cout << "Order with such ID doesn't exist! Try again or write \"quit\" to quit." << endl << endl;
-				}
-			case '2':
-				system("cls");
-				cin >> buffo;
-				while (duplicate)
-				{
-					duplicate = false;
-					if (!empty(veco))
-						buffo.id = veco[size(veco) - 1].id + 1;
-					for (auto& o : veco)
-					{
-						if (buffo.id == o.id)
-						{
-							duplicate = true;
-							break;
-						}
-					}
-				}
-				sync(buffo, vecb);
-				veco.push_back(buffo);
-				save(veco, "orders.txt");
-				save(vecb, "brigades.txt");
-				break;
-			case '3':
-				while (true)
-				{
-					cout << "Enter ID of order you want to edit: ";
-					getline(cin, ID);
-					if (ID == "quit" || ID == "Quit")
-						manage_orders(vecb, veco, veca, i);
-					for (auto& o : veco)
-					{
-						if (stoi(ID) == o.id)
-						{
-							o.edit();
-							sync(o, vecb);
-							save(veco, "orders.txt");
-							save(vecb, "brigades.txt");
-							manage_orders(vecb, veco, veca, i);
-						}
-					}
-					cout << "Order with such ID doesn't exist! Try again or write \"quit\" to quit.\n";
-				}
-			case '4':
-				while (true)
-				{
-					cout << "Enter ID of order you want to delete or write \"quit\" to quit: ";
-					getline(cin, ID);
-					if (ID == "quit" || ID == "Quit")
-						manage_orders(vecb, veco, veca, i);
-					for (auto& o : veco)
-					{
-						if (stoi(ID) == o.id)
-						{
-							o.make_deleted();
-							sync(o, vecb);
-							save(vecb, "brigades.txt");
-							delete_deleted(veco);
-							save(veco, "orders.txt");
-							manage_orders(vecb, veco, veca, i);
-						}
-					}
-					cout << "Order with such ID doesn't exist! Try again or write \"quit\" to quit.\n";
-				}
-			case '5':
-				admin_menu(vecb, veco, veca, i);
-			}
-		}
-	}
-	else
-	{
-        system("cls");
-		cout << "There are no registered orders!" << endl;
-        cout << "\n1 -> Add new order\n" << "2 -> Quit" << endl << endl;
-        string ID;
-        Order buffo;
-        while (true)
+    while (true)
+    {
+        if (size(veco) > 0)
         {
-            switch (_getch())
+            while (true)
             {
-            case '1':
                 system("cls");
-                cin >> buffo;
-                sync(buffo, vecb);
-                save(vecb, "brigades.txt");
-                veco.push_back(buffo);
-                save(veco, "orders.txt");
-                break;
-            case '2':
-                admin_menu(vecb, veco, veca, i);
+                for (const auto& o : veco) //for every reference to element i in vecb -> cout i
+                    cout << o << endl;
+                cout << "\n1 -> Mark order as completed\n"
+                    << "2 -> Add new order\n"
+                    << "3 -> Edit order\n"
+                    << "4 -> Delete order\n"
+                    << "5 -> Quit\n" << endl;
+                string ID;
+                Order buffo;
+                bool duplicate = true;
+                switch (_getch())
+                {
+                case '1':
+                    while (true)
+                    {
+                        cout << "Completed orders are removed from the list. Enter the ID of order you want to mark as completed: ";
+                        getline(cin, ID);
+                        if (ID == "quit" || ID == "Quit")
+                            manage_orders(vecb, veco, veca, i);
+                        for (auto& o : veco)
+                        {
+                            if (stoi(ID) == o.id)
+                            {
+                                for (auto& b : vecb)
+                                {
+                                    if (o.id == b.order)
+                                    {
+                                        ++b.completed;
+                                        b.order = 0;
+                                    }
+                                }
+                                save(vecb, "brigades.txt");
+                                cout << "Success!";
+                                fancy_dots();
+                                o.make_deleted();
+                                delete_deleted(veco);
+                                save(veco, "orders.txt");
+                                manage_orders(vecb, veco, veca, i);
+                            }
+                        }
+                        cout << "Order with such ID doesn't exist! Try again or write \"quit\" to quit." << endl << endl;
+                    }
+                case '2':
+                    system("cls");
+                    cin >> buffo;
+                    while (duplicate)
+                    {
+                        duplicate = false;
+                        if (!empty(veco))
+                            buffo.id = veco[size(veco) - 1].id + 1;
+                        for (auto& o : veco)
+                        {
+                            if (buffo.id == o.id)
+                            {
+                                duplicate = true;
+                                break;
+                            }
+                        }
+                    }
+                    sync(buffo, vecb);
+                    veco.push_back(buffo);
+                    save(veco, "orders.txt");
+                    save(vecb, "brigades.txt");
+                    break;
+                case '3':
+                    while (true)
+                    {
+                        cout << "Enter ID of order you want to edit: ";
+                        getline(cin, ID);
+                        if (ID == "quit" || ID == "Quit")
+                            manage_orders(vecb, veco, veca, i);
+                        for (auto& o : veco)
+                        {
+                            if (stoi(ID) == o.id)
+                            {
+                                o.edit(vecb, veco);
+                                sync(o, vecb);
+                                save(veco, "orders.txt");
+                                save(vecb, "brigades.txt");
+                                manage_orders(vecb, veco, veca, i);
+                            }
+                        }
+                        cout << "Order with such ID doesn't exist! Try again or write \"quit\" to quit.\n";
+                    }
+                case '4':
+                    while (true)
+                    {
+                        cout << "Enter ID of order you want to delete or write \"quit\" to quit: ";
+                        getline(cin, ID);
+                        if (ID == "quit" || ID == "Quit")
+                            manage_orders(vecb, veco, veca, i);
+                        for (auto& o : veco)
+                        {
+                            if (stoi(ID) == o.id)
+                            {
+                                o.make_deleted();
+                                sync(o, vecb);
+                                save(vecb, "brigades.txt");
+                                delete_deleted(veco);
+                                save(veco, "orders.txt");
+                                manage_orders(vecb, veco, veca, i);
+                            }
+                        }
+                        cout << "Order with such ID doesn't exist! Try again or write \"quit\" to quit.\n";
+                    }
+                case '5':
+                    admin_menu(vecb, veco, veca, i);
+                }
             }
         }
-	}
+        else
+        {
+            system("cls");
+            cout << "There are no registered orders!" << endl;
+            cout << "\n1 -> Add new order\n" << "2 -> Quit" << endl << endl;
+            string ID;
+            Order buffo;
+            while (true)
+            {
+                switch (_getch())
+                {
+                case '1':
+                    system("cls");
+                    cin >> buffo;
+                    sync(buffo, vecb);
+                    save(vecb, "brigades.txt");
+                    veco.push_back(buffo);
+                    save(veco, "orders.txt");
+                    break;
+                case '2':
+                    admin_menu(vecb, veco, veca, i);
+                }
+                break;
+            }
+        }
+    }
 }
 
 void edit_account(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca, int& i)
