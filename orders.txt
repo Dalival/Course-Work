@@ -1,0 +1,63 @@
+1001
+OAO Brestgoltrans
+Brest, Sovetskaya 54
+116
+7400
+31.05.2020
+Alpha
+1002
+Roga i Kopita
+Minsk, Karbisheva 82
+116
+5930
+31.05.2020
+Rocket
+1003
+Lidskoye Pivo
+Grodno, Pushkinskaya 164
+116
+4490
+31.05.2020
+Beta
+1004
+GiveAway Inc.
+Polotsk, Pobedi 72
+116
+3200
+31.05.2020
+Molodzi
+1005
+VOCHI app
+Minsk, Mizkevicha 39
+116
+2860
+31.05.2020
+Gamma
+1006
+Playtika
+Gomel, Pritizkogo 29
+116
+1860
+31.05.2020
+Acselerators
+1007
+EPUM Systems
+Vitebsk, Molodyozhnaya 43
+116
+12760
+31.05.2020
+no maintainer
+1008
+Monday Digital Agency
+Pinsk, Vertical'naya 13
+116
+5910
+31.05.2020
+Confus
+1009
+Blitz holding
+Mogilyov, Vazhnaya 53
+116
+6320
+31.05.2020
+Destroyers

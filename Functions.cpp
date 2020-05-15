@@ -669,18 +669,20 @@ void show_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& ve
 
 void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>& veca) //my task from curator
 {
-	system("cls");
-	if (size(vecb) > 3)
-	{
-		vector<Brigade> top = vecb; //vector top is for sorting. I don't want to sort the original vector of brigades
-		sort(top.begin(), top.end(), [](const Brigade& a, const Brigade& b) { return a.completed < b.completed; });
-		for (size_t i = 0; i < 3; i++)
-			cout << top[i] << endl;
-	}
-    else if (size(vecb) <= 3) //no sense to sort
+    system("cls");
+    if (size(vecb) > 3)
     {
-        for (int i = 0; i < size(vecb); i++)
-            cout << vecb[i] << endl;
+        vector<Brigade> top = vecb;
+        sort(top.begin(), top.end(), [](Brigade& a, Brigade& b) { return a.completed > b.completed; });
+        for (size_t i = 0; i < 3; i++)
+            cout << top[i] << endl;
+    }
+    else if (size(vecb) <= 3)
+    {
+        vector<Brigade> top = vecb;
+        sort(top.begin(), top.end(), [](Brigade& a, Brigade& b) { return a.completed > b.completed; });
+        for (size_t i = 0; i < size(top); i++)
+            cout << top[i] << endl;
     }
     else // nothing to sort
 	{
@@ -697,14 +699,16 @@ void show_top_brigades(vector<Brigade>& vecb, vector<Order>& veco, vector<Admin>
     if (size(vecb) > 3)
     {
         vector<Brigade> top = vecb;
-        sort(top.begin(), top.end(), [](const Brigade& a, const Brigade& b) { return a.completed < b.completed; });
+        sort(top.begin(), top.end(), [](Brigade& a, Brigade& b) { return a.completed > b.completed; });
         for (size_t i = 0; i < 3; i++)
             cout << top[i] << endl;
     }
     else if (size(vecb) <= 3)
     {
-        for (int i = 0; i < size(vecb); i++)
-            cout << vecb[i] << endl;
+        vector<Brigade> top = vecb;
+        sort(top.begin(), top.end(), [](Brigade& a, Brigade& b) { return a.completed > b.completed; });
+        for (size_t i = 0; i < size(top); i++)
+            cout << top[i] << endl;
     }
     else
     {
